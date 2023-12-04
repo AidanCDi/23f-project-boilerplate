@@ -12,7 +12,7 @@ def get_recipes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of recipes
-    cursor.execute('SELECT Title, Price, ROUND(Calories / Servings) as "Calories per Serving", Servings, Name as Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate \
+    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Price, ROUND(Calories / Servings) as "Calories per Serving", Servings, Name as Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate \
         FROM Recipes r \
             JOIN RecipeCategories rc \
                 ON r.recipeID = rc.RecipeID \
@@ -21,7 +21,7 @@ def get_recipes():
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories \
                 FROM Recipes r \
                     LEFT OUTER JOIN RecipeIngredients ri \
-                        OM r.RecipeID = ri.RecipeID \
+                        ON r.RecipeID = ri.RecipeID \
                     JOIN Ingredients i on ri.IngredientID = i.IngredientID \
                 GROUP BY r.RecipeID) recipe_attributes \
                 ON r.RecipeID = recipe_attributes.RecipeID')
@@ -172,7 +172,7 @@ def get_recipe_reviews_user (recipe_id, user_id):
     return jsonify(json_data)
 
 
-@recipes.route('/recipes/<recipe_id>/ingredients/<ingredient_id>', methods=['GET'])
+@recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
 def get_ingredient_attrs (recipe_id, ingredient_id):
 
     query = 'SELECT Name, UnitPrice, UnitCalories, UnitProtein, UnitFiber\
@@ -189,7 +189,7 @@ def get_ingredient_attrs (recipe_id, ingredient_id):
     return jsonify(json_data)
 
 
-@recipes.route('/recipes/<recipe_id>/ingredients/<ingredient_id>', methods=['GET'])
+@recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
 def get_ingredient_allergens (recipe_id, ingredient_id):
 
     query = 'SELECT i.Name as Name, a.Name as Allergens\
@@ -210,7 +210,7 @@ def get_ingredient_allergens (recipe_id, ingredient_id):
     return jsonify(json_data)
 
 
-@recipes.route('/recipes/<recipe_id>/ingredients/<ingredient_id>', methods=['GET'])
+@recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
 def get_ingredient_substitutes (recipe_id, ingredient_id):
 
     query = 'SELECT Name\
