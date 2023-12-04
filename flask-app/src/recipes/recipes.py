@@ -12,7 +12,7 @@ def get_recipes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of recipes
-    cursor.execute('SELECT Title, Price, ROUND(Calories / Servings) as "Calories per Serving", Servings, Name as Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate FROM Recipes r JOIN RecipeCategories rc ON r.recipeID = rc.RecipeID JOIN Categories c ON rc.CategoryID = c.CategoryID JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as CaloriesFROM Recipes r LEFT OUTER JOIN RecipeIngredients ri on r.RecipeID = ri.RecipeID JOIN Ingredients i on ri.IngredientID = i.IngredientID GROUP BY r.RecipeID) recipe_attributes ON r.RecipeID = recipe_attributes.RecipeID')
+    cursor.execute('SELECT Title, Price, ROUND(Calories / Servings) as "Calories per Serving", Servings, Name as Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate FROM Recipes r JOIN RecipeCategories rc ON r.recipeID = rc.RecipeID JOIN Categories c ON rc.CategoryID = c.CategoryID JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories FROM Recipes r LEFT OUTER JOIN RecipeIngredients ri on r.RecipeID = ri.RecipeID JOIN Ingredients i on ri.IngredientID = i.IngredientID GROUP BY r.RecipeID) recipe_attributes ON r.RecipeID = recipe_attributes.RecipeID')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
