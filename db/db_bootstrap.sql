@@ -17,21 +17,13 @@ PRIMARY KEY (UserID)
 );
 
 
-CREATE TABLE Categories (
-CategoryID INTEGER AUTO_INCREMENT NOT NULL UNIQUE,
-Type VARCHAR(255),
-Name VARCHAR(255) NOT NULL,
-PRIMARY KEY (CategoryID),
-INDEX CategoryIndex (Name)
-);
-
-
 CREATE TABLE Recipes (
 RecipeID INTEGER AUTO_INCREMENT NOT NULL UNIQUE,
 Title VARCHAR(255) NOT NULL,
 Description TEXT,
 Instructions TEXT NOT NULL,
 Servings INTEGER NOT NULL,
+Category VARCHAR(255), 
 PrepTime INTEGER,
 CookTime INTEGER,
 PostDate DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -45,6 +37,7 @@ INDEX RecipeTitleIndex (Title),
 INDEX RecipeServingsIndex (Servings),
 INDEX RecipePrepTimeIndex (PrepTime),
 INDEX RecipeCookTimeIndex (CookTime),
+INDEX RecipeCateogryIndex (Category),
 INDEX UserIDIndex (UserID)
 );
 
@@ -111,17 +104,6 @@ REFERENCES Users(UserID),
 FOREIGN KEY (RecipeID)
 REFERENCES Recipes(RecipeID),
 INDEX ReviewRating (Rating)
-);
-
-
-CREATE TABLE RecipeCategories (
-RecipeID INTEGER NOT NULL,
-CategoryID INTEGER NOT NULL,
-PRIMARY KEY (RecipeID, CategoryID),
-FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
-FOREIGN KEY (CategoryID)
-REFERENCES Categories(CategoryID)
 );
 
 
@@ -251,46 +233,33 @@ INSERT INTO Socials (UserID, Platform, Username) VALUES
 (25, 'Snapchat', 'avery_evans');
 
 
-INSERT INTO Categories (Type, Name) VALUES
-('Cuisine', 'Italian'),
-('Cuisine', 'Mexican'),
-('Dessert', 'Cakes'),
-('Dessert', 'Cookies'),
-('Main Dish', 'Chicken'),
-('Main Dish', 'Vegetarian'),
-('Salad', 'Green Salad'),
-('Salad', 'Caesar Salad'),
-('Breakfast', 'Pancakes'),
-('Breakfast', 'Omelette');
-
-
-INSERT INTO Recipes (Title, Description, Instructions, Servings, PrepTime, CookTime, UserID)
+INSERT INTO Recipes (Title, Description, Instructions, Servings, PrepTime, CookTime, Category, UserID)
 VALUES
-('Spaghetti Bolognese', 'Classic Italian pasta dish with meat sauce.', '1. Cook pasta according to package instructions. 2. Brown ground beef and onions. 3. Add tomatoes and seasonings. 4. Simmer for 20 minutes. 5. Serve over cooked pasta.', 4, 15, 30, 1),
-('Vegetarian Tacos', 'A delicious and healthy meat-free taco recipe.', '1. Sauté vegetables in olive oil. 2. Season with taco spices. 3. Warm tortillas. 4. Assemble tacos with veggies, beans, and toppings.', 6, 20, 15, 2),
-('Chocolate Cake', 'Rich and moist chocolate cake for any occasion.', '1. Preheat oven to 350°F. 2. Mix dry ingredients. 3. Beat butter and sugar. 4. Add eggs and vanilla. 5. Combine wet and dry ingredients. 6. Bake for 30-35 minutes.', 12, 20, 35, 3),
-('Caprese Salad', 'Refreshing salad with tomatoes, mozzarella, and basil.', '1. Slice tomatoes and mozzarella. 2. Arrange on a plate. 3. Drizzle with balsamic glaze. 4. Garnish with fresh basil. 5. Sprinkle with salt and pepper.', 4, 10, 0, 4),
-('Blueberry Pancakes', 'Fluffy pancakes filled with fresh blueberries.', '1. Mix flour, baking powder, and sugar. 2. In a separate bowl, whisk eggs and milk. 3. Combine wet and dry ingredients. 4. Fold in blueberries. 5. Cook on a griddle until golden brown.', 8, 15, 15, 5),
-('Chicken Alfredo Pasta', 'Creamy Alfredo sauce with grilled chicken over pasta.', '1. Cook pasta al dente. 2. Grill chicken until cooked. 3. Prepare Alfredo sauce. 4. Combine chicken, pasta, and sauce. 5. Garnish with parsley.', 4, 20, 25, 6),
-('Quinoa Salad', 'Healthy salad with quinoa, vegetables, and feta cheese.', '1. Cook quinoa and let it cool. 2. Chop vegetables and mix with quinoa. 3. Crumble feta cheese on top. 4. Dress with olive oil and lemon juice. 5. Toss and serve chilled.', 6, 15, 0, 7),
-('Lemon Garlic Shrimp', 'Garlicky shrimp with a zesty lemon twist.', '1. Sauté shrimp in garlic and butter. 2. Add lemon juice and zest. 3. Season with salt and pepper. 4. Cook until shrimp are pink. 5. Serve over rice or pasta.', 4, 10, 15, 8),
-('Berry Smoothie Bowl', 'A refreshing and nutritious smoothie bowl with mixed berries.', '1. Blend mixed berries, yogurt, and honey. 2. Pour into a bowl. 3. Top with granola, sliced fruits, and chia seeds. 4. Enjoy immediately.', 2, 10, 0, 9),
-('Vegetable Stir-Fry', 'Quick and colorful stir-fry with assorted vegetables.', '1. Stir-fry vegetables in a wok with sesame oil. 2. Add soy sauce and ginger. 3. Cook until veggies are tender-crisp. 4. Serve over rice or noodles.', 4, 15, 12, 10),
-('Grilled Salmon with Lemon Dill Sauce', 'Healthy grilled salmon topped with a zesty lemon dill sauce.', '1. Preheat grill. 2. Season salmon fillets. 3. Grill until cooked through. 4. Mix lemon juice, dill, and yogurt for the sauce. 5. Serve salmon with the sauce.', 2, 15, 20, 11),
-('Vegetable Lasagna', 'Layered lasagna with a variety of roasted vegetables and cheese.', '1. Roast assorted vegetables. 2. Prepare lasagna noodles. 3. Layer noodles, veggies, and cheese. 4. Bake until bubbly and golden. 5. Let it cool before serving.', 8, 30, 40, 12),
-('Mango Avocado Salsa Chicken', 'Grilled chicken topped with a fresh mango avocado salsa.', '1. Grill chicken breasts. 2. Dice mango, avocado, and tomatoes. 3. Mix with red onion and cilantro. 4. Spoon salsa over grilled chicken. 5. Enjoy with rice or salad.', 4, 20, 15, 13),
-('Greek Salad with Chicken', 'A classic Greek salad with added grilled chicken for protein.', '1. Grill chicken until fully cooked. 2. Toss together chopped tomatoes, cucumbers, olives, and feta. 3. Add grilled chicken on top. 4. Dress with olive oil and lemon juice.', 4, 15, 25, 14),
-('Homemade Pizza', 'Create your own pizza with your favorite toppings.', '1. Preheat oven to 475°F. 2. Roll out pizza dough. 3. Add sauce, cheese, and toppings. 4. Bake until crust is golden and cheese is melted. 5. Slice and enjoy!', 4, 20, 15, 15),
-('Beef and Broccoli Stir Fry', 'Tender beef strips and crisp broccoli in a savory stir-fry sauce.', '1. Sear beef in a hot wok. 2. Add broccoli and stir-fry until tender-crisp. 3. Mix in soy sauce and garlic. 4. Serve over rice.', 4, 15, 20, 16),
-('Crispy Baked Chicken Thighs', 'Golden and crispy baked chicken thighs with a flavorful seasoning.', '1. Preheat oven to 425°F. 2. Season chicken thighs with spices. 3. Bake until skin is crispy and internal temperature reaches 165°F. 4. Let it rest before serving.', 4, 10, 35, 17),
-('Mushroom Risotto', 'Creamy risotto with sautéed mushrooms and Parmesan cheese.', '1. Sauté mushrooms and onions. 2. Toast Arborio rice in butter. 3. Add warm broth gradually while stirring. 4. Stir in Parmesan cheese until creamy. 5. Garnish with parsley.', 4, 20, 25, 18),
-('Honey Mustard Glazed Salmon', 'Baked salmon fillets glazed with a sweet and tangy honey mustard sauce.', '1. Preheat oven to 400°F. 2. Mix honey, mustard, and soy sauce. 3. Brush over salmon fillets. 4. Bake until salmon flakes easily with a fork. 5. Serve with lemon wedges.', 2, 10, 15, 19),
-('Pesto Pasta with Cherry Tomatoes', 'Pasta tossed in a basil pesto sauce and topped with fresh cherry tomatoes.', '1. Cook pasta al dente. 2. Blend basil, garlic, pine nuts, and Parmesan for pesto. 3. Toss cooked pasta in pesto. 4. Top with halved cherry tomatoes. 5. Enjoy!', 4, 15, 15, 20),
-('Teriyaki Chicken Skewers', 'Grilled chicken skewers glazed with teriyaki sauce.', '1. Marinate chicken in teriyaki sauce. 2. Thread onto skewers. 3. Grill until cooked through. 4. Brush with extra teriyaki sauce. 5. Serve with rice or veggies.', 4, 20, 15, 21),
-('Spinach and Feta Stuffed Chicken', 'Chicken breasts stuffed with spinach and feta cheese.', '1. Butterfly chicken breasts. 2. Mix spinach, feta, and garlic. 3. Stuff into chicken. 4. Bake until chicken is cooked. 5. Serve with a side salad.', 4, 15, 30, 22),
-('Black Bean and Corn Salsa', 'A flavorful salsa with black beans, corn, and fresh herbs.', '1. Mix black beans, corn, tomatoes, and cilantro. 2. Add lime juice and salt. 3. Let it chill in the fridge. 4. Serve with tortilla chips or as a topping.', 6, 10, 0, 23),
-('Shrimp Scampi Pasta', 'Lemon garlic shrimp served over a bed of linguine pasta.', '1. Cook linguine al dente. 2. Sauté shrimp in garlic and butter. 3. Add white wine and lemon juice. 4. Toss cooked pasta in the shrimp mixture. 5. Garnish with parsley.', 4, 15, 20, 24),
-('BBQ Pulled Pork Sandwiches', 'Slow-cooked pulled pork in barbecue sauce, served on brioche buns.', '1. Rub pork shoulder with BBQ seasoning. 2. Slow cook until tender. 3. Shred pork and mix with BBQ sauce. 4. Serve on toasted brioche buns with coleslaw.', 6, 30, 240, 25);
+('Spaghetti Bolognese', 'Classic Italian pasta dish with meat sauce.', '1. Cook pasta according to package instructions. 2. Brown ground beef and onions. 3. Add tomatoes and seasonings. 4. Simmer for 20 minutes. 5. Serve over cooked pasta.', 4, 15, 30, 'Pasta', 1),
+('Vegetarian Tacos', 'A delicious and healthy meat-free taco recipe.', '1. Sauté vegetables in olive oil. 2. Season with taco spices. 3. Warm tortillas. 4. Assemble tacos with veggies, beans, and toppings.', 6, 20, 15, 'Chicken', 2),
+('Chocolate Cake', 'Rich and moist chocolate cake for any occasion.', '1. Preheat oven to 350°F. 2. Mix dry ingredients. 3. Beat butter and sugar. 4. Add eggs and vanilla. 5. Combine wet and dry ingredients. 6. Bake for 30-35 minutes.', 12, 20, 35, 'Dessert', 3),
+('Caprese Salad', 'Refreshing salad with tomatoes, mozzarella, and basil.', '1. Slice tomatoes and mozzarella. 2. Arrange on a plate. 3. Drizzle with balsamic glaze. 4. Garnish with fresh basil. 5. Sprinkle with salt and pepper.', 4, 10, 0, 'Salad', 4),
+('Blueberry Pancakes', 'Fluffy pancakes filled with fresh blueberries.', '1. Mix flour, baking powder, and sugar. 2. In a separate bowl, whisk eggs and milk. 3. Combine wet and dry ingredients. 4. Fold in blueberries. 5. Cook on a griddle until golden brown.', 8, 15, 15, 'Breakfast', 5),
+('Chicken Alfredo Pasta', 'Creamy Alfredo sauce with grilled chicken over pasta.', '1. Cook pasta al dente. 2. Grill chicken until cooked. 3. Prepare Alfredo sauce. 4. Combine chicken, pasta, and sauce. 5. Garnish with parsley.', 4, 20, 25, 'Pasta', 6),
+('Quinoa Salad', 'Healthy salad with quinoa, vegetables, and feta cheese.', '1. Cook quinoa and let it cool. 2. Chop vegetables and mix with quinoa. 3. Crumble feta cheese on top. 4. Dress with olive oil and lemon juice. 5. Toss and serve chilled.', 6, 15, 0, 'Salad', 7),
+('Lemon Garlic Shrimp', 'Garlicky shrimp with a zesty lemon twist.', '1. Sauté shrimp in garlic and butter. 2. Add lemon juice and zest. 3. Season with salt and pepper. 4. Cook until shrimp are pink. 5. Serve over rice or pasta.', 4, 10, 15, 'Seafood', 8),
+('Berry Smoothie Bowl', 'A refreshing and nutritious smoothie bowl with mixed berries.', '1. Blend mixed berries, yogurt, and honey. 2. Pour into a bowl. 3. Top with granola, sliced fruits, and chia seeds. 4. Enjoy immediately.', 2, 10, 0, 'Drink', 9),
+('Vegetable Stir-Fry', 'Quick and colorful stir-fry with assorted vegetables.', '1. Stir-fry vegetables in a wok with sesame oil. 2. Add soy sauce and ginger. 3. Cook until veggies are tender-crisp. 4. Serve over rice or noodles.', 4, 15, 12, 'Chicken', 10),
+('Grilled Salmon with Lemon Dill Sauce', 'Healthy grilled salmon topped with a zesty lemon dill sauce.', '1. Preheat grill. 2. Season salmon fillets. 3. Grill until cooked through. 4. Mix lemon juice, dill, and yogurt for the sauce. 5. Serve salmon with the sauce.', 2, 15, 20, 'Seafood', 11),
+('Vegetable Lasagna', 'Layered lasagna with a variety of roasted vegetables and cheese.', '1. Roast assorted vegetables. 2. Prepare lasagna noodles. 3. Layer noodles, veggies, and cheese. 4. Bake until bubbly and golden. 5. Let it cool before serving.', 8, 30, 40, 'Pasta', 12),
+('Mango Avocado Salsa Chicken', 'Grilled chicken topped with a fresh mango avocado salsa.', '1. Grill chicken breasts. 2. Dice mango, avocado, and tomatoes. 3. Mix with red onion and cilantro. 4. Spoon salsa over grilled chicken. 5. Enjoy with rice or salad.', 4, 20, 15, 'Chicken', 13),
+('Greek Salad with Chicken', 'A classic Greek salad with added grilled chicken for protein.', '1. Grill chicken until fully cooked. 2. Toss together chopped tomatoes, cucumbers, olives, and feta. 3. Add grilled chicken on top. 4. Dress with olive oil and lemon juice.', 4, 15, 25, 'Salad', 14),
+('Homemade Pizza', 'Create your own pizza with your favorite toppings.', '1. Preheat oven to 475°F. 2. Roll out pizza dough. 3. Add sauce, cheese, and toppings. 4. Bake until crust is golden and cheese is melted. 5. Slice and enjoy!', 4, 20, 15, NULL, 15),
+('Beef and Broccoli Stir Fry', 'Tender beef strips and crisp broccoli in a savory stir-fry sauce.', '1. Sear beef in a hot wok. 2. Add broccoli and stir-fry until tender-crisp. 3. Mix in soy sauce and garlic. 4. Serve over rice.', 4, 15, 20, 'Beef', 16),
+('Crispy Baked Chicken Thighs', 'Golden and crispy baked chicken thighs with a flavorful seasoning.', '1. Preheat oven to 425°F. 2. Season chicken thighs with spices. 3. Bake until skin is crispy and internal temperature reaches 165°F. 4. Let it rest before serving.', 4, 10, 35, 'Chicken', 17),
+('Mushroom Risotto', 'Creamy risotto with sautéed mushrooms and Parmesan cheese.', '1. Sauté mushrooms and onions. 2. Toast Arborio rice in butter. 3. Add warm broth gradually while stirring. 4. Stir in Parmesan cheese until creamy. 5. Garnish with parsley.', 4, 20, 25, 'Chicken', 18),
+('Honey Mustard Glazed Salmon', 'Baked salmon fillets glazed with a sweet and tangy honey mustard sauce.', '1. Preheat oven to 400°F. 2. Mix honey, mustard, and soy sauce. 3. Brush over salmon fillets. 4. Bake until salmon flakes easily with a fork. 5. Serve with lemon wedges.', 2, 10, 15, 'Seafood', 19),
+('Pesto Pasta with Cherry Tomatoes', 'Pasta tossed in a basil pesto sauce and topped with fresh cherry tomatoes.', '1. Cook pasta al dente. 2. Blend basil, garlic, pine nuts, and Parmesan for pesto. 3. Toss cooked pasta in pesto. 4. Top with halved cherry tomatoes. 5. Enjoy!', 4, 15, 15, 'Pasta', 20),
+('Teriyaki Chicken Skewers', 'Grilled chicken skewers glazed with teriyaki sauce.', '1. Marinate chicken in teriyaki sauce. 2. Thread onto skewers. 3. Grill until cooked through. 4. Brush with extra teriyaki sauce. 5. Serve with rice or veggies.', 4, 20, 15, 'Chicken', 21),
+('Spinach and Feta Stuffed Chicken', 'Chicken breasts stuffed with spinach and feta cheese.', '1. Butterfly chicken breasts. 2. Mix spinach, feta, and garlic. 3. Stuff into chicken. 4. Bake until chicken is cooked. 5. Serve with a side salad.', 4, 15, 30, 'Chicken', 22),
+('Black Bean and Corn Salsa', 'A flavorful salsa with black beans, corn, and fresh herbs.', '1. Mix black beans, corn, tomatoes, and cilantro. 2. Add lime juice and salt. 3. Let it chill in the fridge. 4. Serve with tortilla chips or as a topping.', 6, 10, 0, NULL, 23),
+('Shrimp Scampi Pasta', 'Lemon garlic shrimp served over a bed of linguine pasta.', '1. Cook linguine al dente. 2. Sauté shrimp in garlic and butter. 3. Add white wine and lemon juice. 4. Toss cooked pasta in the shrimp mixture. 5. Garnish with parsley.', 4, 15, 20, 'Pasta', 24),
+('BBQ Pulled Pork Sandwiches', 'Slow-cooked pulled pork in barbecue sauce, served on brioche buns.', '1. Rub pork shoulder with BBQ seasoning. 2. Slow cook until tender. 3. Shred pork and mix with BBQ sauce. 4. Serve on toasted brioche buns with coleslaw.', 6, 30, 240, 'Pork', 25);
 
 INSERT INTO Appliances (Name) VALUES
 ('Blender'),
@@ -683,114 +652,6 @@ INSERT INTO RecipeIngredients (RecipeID, IngredientID, Units) VALUES
 (25, 110, 1),
 (25, 111, 1),
 (25, 112, 1);
-
--- RecipeCategories for 'Spaghetti Bolognese'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(1, 1), -- Italian
-(1, 5); -- Main Dish
-
--- RecipeCategories for 'Vegetarian Tacos'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(2, 2), -- Mexican
-(2, 6); -- Vegetarian
-
--- RecipeCategories for 'Chocolate Cake'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(3, 3); -- Dessert
-
--- RecipeCategories for 'Caprese Salad'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(4, 1), -- Italian
-(4, 7); -- Salad
-
--- RecipeCategories for 'Blueberry Pancakes'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(5, 8); -- Breakfast
-
--- RecipeCategories for 'Chicken Alfredo Pasta'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(6, 5); -- Main Dish
-
--- RecipeCategories for 'Quinoa Salad'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(7, 9); -- Salad
-
--- RecipeCategories for 'Lemon Garlic Shrimp'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(8, 5); -- Main Dish
-
--- RecipeCategories for 'Berry Smoothie Bowl'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(9, 8); -- Breakfast
-
--- RecipeCategories for 'Vegetable Stir-Fry'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(10, 5), -- Main Dish
-(10, 9); -- Salad
-
--- RecipeCategories for 'Grilled Salmon with Lemon Dill Sauce'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(11, 5); -- Main Dish
-
--- RecipeCategories for 'Vegetable Lasagna'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(12, 6), -- Vegetarian
-(12, 5); -- Main Dish
-
--- RecipeCategories for 'Mango Avocado Salsa Chicken'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(13, 5), -- Main Dish
-(13, 9); -- Salad
-
--- RecipeCategories for 'Greek Salad with Chicken'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(14, 5), -- Main Dish
-(14, 7); -- Salad
-
--- RecipeCategories for 'Homemade Pizza'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(15, 5); -- Main Dish
-
--- RecipeCategories for 'Beef and Broccoli Stir Fry'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(16, 5); -- Main Dish
-
--- RecipeCategories for 'Crispy Baked Chicken Thighs'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(17, 5); -- Main Dish
-
--- RecipeCategories for 'Mushroom Risotto'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(18, 5); -- Main Dish
-
--- RecipeCategories for 'Honey Mustard Glazed Salmon'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(19, 5); -- Main Dish
-
--- RecipeCategories for 'Pesto Pasta with Cherry Tomatoes'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(20, 5); -- Main Dish
-
--- RecipeCategories for 'Teriyaki Chicken Skewers'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(21, 5); -- Main Dish
-
--- RecipeCategories for 'Spinach and Feta Stuffed Chicken'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(22, 5); -- Main Dish
-
--- RecipeCategories for 'Black Bean and Corn Salsa'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(23, 9); -- Salad
-
--- RecipeCategories for 'Shrimp Scampi Pasta'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(24, 5); -- Main Dish
-
--- RecipeCategories for 'BBQ Pulled Pork Sandwiches'
-INSERT INTO RecipeCategories (RecipeID, CategoryID) VALUES
-(25, 5), -- Main Dish
-(25, 10); -- Cuisine
 
 
 -- RecipeAppliances for 'Spaghetti Bolognese'
