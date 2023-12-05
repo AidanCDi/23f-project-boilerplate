@@ -5,7 +5,7 @@ from src import db
 
 users = Blueprint('users', __name__)
 
-@users.route('/users/<user_id>', methods=['GET'])
+@users.route('/users/<user_id>/socials', methods=['GET'])
 def get_users_socials (user_id):
 
     query = 'SELECT Platform, Username\
@@ -25,7 +25,7 @@ def get_users_socials (user_id):
     return jsonify(json_data)
 
 
-@users.route('/users/<user_id>', methods=['GET'])
+@users.route('/users/<user_id>/recipes', methods=['GET'])
 def get_users_recipes (user_id):
 
     query = 'SELECT Title, Price, ROUND(Calories / Servings) as "Calories per Serving", Servings, Name as Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate\
