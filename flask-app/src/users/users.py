@@ -44,18 +44,16 @@ def get_users_socials (user_id):
 @users.route('/users/<user_id>/recipes', methods=['GET'])
 def get_users_recipes (user_id):
 
-    query = 'SELECT Title, Price, ROUND(Calories / Servings) as "Calories per Serving", Servings, Name as Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate\
-        FROM Recipes r\
-            JOIN RecipeCategories rc\
-                ON r.recipeID = rc.RecipeID\
-            JOIN Categories c\
-                ON rc.CategoryID = c.CategoryID\
-            JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories\
-                FROM Recipes r\
-                    LEFT OUTER JOIN RecipeIngredients ri on r.RecipeID = ri.RecipeID\
-                    JOIN Ingredients i on ri.IngredientID = i.IngredientID\
-                GROUP BY r.RecipeID) recipe_attributes\
-                ON r.RecipeID = recipe_attributes.RecipeID\
+    query = 'SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
+        FROM Recipes r \
+            JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
+                FROM Recipes r \
+                    LEFT OUTER JOIN RecipeIngredients ri \
+                        ON r.RecipeID = ri.RecipeID \
+                    JOIN Ingredients i on ri.IngredientID = i.IngredientID \
+                GROUP BY r.RecipeID) recipe_attributes \
+                ON r.RecipeID = recipe_attributes.RecipeID \
+                    LEFT OUTER JOIN (SELECT RecipeID, round(avg(Rating), 2) as Rating FROM Reviews GROUP BY RecipeID) reviews ON r.RecipeID = reviews.RecipeID\
         WHERE r.UserID = ' + str(user_id)
     current_app.logger.info(query)
 
