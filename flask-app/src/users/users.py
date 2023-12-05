@@ -67,7 +67,7 @@ def get_users_recipes (user_id):
     return jsonify(json_data)
 
 
-@users.route('/users/<user_id>', methods=['GET'])
+@users.route('/users/<user_id>/plans', methods=['GET'])
 def get_all_plans (user_id):
 
     query = 'SELECT p.PlanName, COUNT(pr.RecipeID) as Recipe, SUM(Price) as Price\
