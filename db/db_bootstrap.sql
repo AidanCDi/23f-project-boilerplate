@@ -37,7 +37,7 @@ INDEX RecipeTitleIndex (Title),
 INDEX RecipeServingsIndex (Servings),
 INDEX RecipePrepTimeIndex (PrepTime),
 INDEX RecipeCookTimeIndex (CookTime),
-INDEX RecipeCateogryIndex (Category),
+INDEX RecipeCategoryIndex (Category),
 INDEX UserIDIndex (UserID)
 );
 
