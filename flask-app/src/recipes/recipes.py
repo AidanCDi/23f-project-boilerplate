@@ -238,8 +238,23 @@ def get_ingredient_attrs (recipe_id, ingredient_id):
     return jsonify(json_data)
 
 
+@recipes.route('/ingredients', methods=['GET'])
+def get_ingredient_allergens ():
+
+    query = 'SELECT IngredientID as code, Name as name FROM Ingredients'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
 @recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
-def get_ingredient_allergens (recipe_id, ingredient_id):
+def get_ingredient_allergens (ingredient_id):
 
     query = 'SELECT i.Name as Name, a.Name as Allergens\
         FROM IngredientAllergens ia\
@@ -260,7 +275,7 @@ def get_ingredient_allergens (recipe_id, ingredient_id):
 
 
 @recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
-def get_ingredient_substitutes (recipe_id, ingredient_id):
+def get_ingredient_substitutes (ingredient_id):
 
     query = 'SELECT Name\
         FROM Ingredients i\
