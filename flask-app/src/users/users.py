@@ -5,6 +5,22 @@ from src import db
 
 users = Blueprint('users', __name__)
 
+@users.route('/users', methods=['GET'])
+def get_users (user_id):
+
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as name, UserID as code FROM Users'
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+    
+
 @users.route('/users/<user_id>/socials', methods=['GET'])
 def get_users_socials (user_id):
 
