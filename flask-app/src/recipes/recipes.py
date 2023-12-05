@@ -12,7 +12,7 @@ def get_recipes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of recipes
-    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, Fiber, Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate \
+    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate \
         FROM Recipes r \
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
                 FROM Recipes r \
@@ -20,7 +20,8 @@ def get_recipes():
                         ON r.RecipeID = ri.RecipeID \
                     JOIN Ingredients i on ri.IngredientID = i.IngredientID \
                 GROUP BY r.RecipeID) recipe_attributes \
-                ON r.RecipeID = recipe_attributes.RecipeID')
+                ON r.RecipeID = recipe_attributes.RecipeID \
+                    LEFT OUTER JOIN (SELECT RecipeID, round(avg(Rating), 2) as Rating FROM Reviews GROUP BY RecipeID) reviews ON r.RecipeID = reviews.RecipeID')
 
     # grab the column headers from the returned data
     column_headers = [x[0] for x in cursor.description]
