@@ -40,6 +40,41 @@ def get_recipes():
 
     return jsonify(json_data)
 
+
+def get_recipes():
+    # get a cursor object from the database
+    cursor = db.get_db().cursor()
+
+    # use cursor to query the database for a list of recipes
+    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
+        FROM Recipes r \
+            JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
+                FROM Recipes r \
+                    LEFT OUTER JOIN RecipeIngredients ri \
+                        ON r.RecipeID = ri.RecipeID \
+                    JOIN Ingredients i on ri.IngredientID = i.IngredientID \
+                GROUP BY r.RecipeID) recipe_attributes \
+                ON r.RecipeID = recipe_attributes.RecipeID \
+                    LEFT OUTER JOIN (SELECT RecipeID, round(avg(Rating), 2) as Rating FROM Reviews GROUP BY RecipeID) reviews ON r.RecipeID = reviews.RecipeID')
+
+    # grab the column headers from the returned data
+    column_headers = [x[0] for x in cursor.description]
+
+    # create an empty dictionary object to use in 
+    # putting column headers together with data
+    json_data = []
+
+    # fetch all the data from the cursor
+    theData = cursor.fetchall()
+
+    # for each of the rows, zip the data elements together with
+    # the column headers. 
+    for row in theData:
+        json_data.append(dict(zip(column_headers, row)))
+
+    return jsonify(json_data)
+    
+
 @recipes.route('/recipes/<recipe_id>', methods=['GET'])
 def get_recipe_details (recipe_id):
 
@@ -57,6 +92,22 @@ def get_recipe_details (recipe_id):
                             WHERE ri.RecipeID = ' + str(recipe_id) + ') ingredient_details\
             ON r.RecipeID = ingredient_details.RecipeID\
         WHERE r.RecipeID = ' + str(recipe_id)
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
+@recipes.route('/recipes/list', methods=['GET'])
+def get_recipes_list ():
+
+    query = 'SELECT Title as name, RecipeID as code FROM Recipes'
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
