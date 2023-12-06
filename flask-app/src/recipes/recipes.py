@@ -12,7 +12,7 @@ def get_recipes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of recipes
-    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
+    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
         FROM Recipes r \
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
                 FROM Recipes r \
@@ -46,7 +46,7 @@ def get_recipes():
     cursor = db.get_db().cursor()
 
     # use cursor to query the database for a list of recipes
-    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
+    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
         FROM Recipes r \
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
                 FROM Recipes r \
@@ -78,20 +78,23 @@ def get_recipes():
 @recipes.route('/recipes/<recipe_id>', methods=['GET'])
 def get_recipe_details (recipe_id):
 
-    query = 'SELECT Title, Description, Instructions, Servings, PrepTime, CookTime, Price, Calories, Protein, Fiber\
+    query = 'SELECT Title, Description, Instructions, Servings, PrepTime, CookTime, Price, Calories, Protein, Fiber, CONCAT(FirstName, " ", LastName) as Name, avg(Rating)\
         FROM Recipes r JOIN (SELECT ri.RecipeID,\
-                                SUM(Units * UnitPrice) as Price,\
-                                ROUND(SUM(Units * UnitCalories) / Servings) as Calories,\
-                                ROUND(SUM(Units * UnitProtein) / Servings) as Protein,\
-                                ROUND(SUM(Units * UnitFiber) / Servings) as Fiber\
-                            FROM Ingredients i\
-                                JOIN RecipeIngredients ri\
-                                    ON i.IngredientID = ri.IngredientID\
-                                JOIN Recipes r\
-                                    ON ri.RecipeID = r.RecipeID\
-                            WHERE ri.RecipeID = ' + str(recipe_id) + ') ingredient_details\
-            ON r.RecipeID = ingredient_details.RecipeID\
-        WHERE r.RecipeID = ' + str(recipe_id)
+                                        SUM(Units * UnitPrice) as Price,\
+                                        ROUND(SUM(Units * UnitCalories) / Servings) as Calories,\
+                                        ROUND(SUM(Units * UnitProtein) / Servings) as Protein,\
+                                        ROUND(SUM(Units * UnitFiber) / Servings) as Fiber\
+                                    FROM Ingredients i\
+                                        JOIN RecipeIngredients ri\
+                                            ON i.IngredientID = ri.IngredientID\
+                                        JOIN Recipes r\
+                                            ON ri.RecipeID = r.RecipeID\
+                                    WHERE ri.RecipeID = ' + str(recipe_id) + ') ingredient_details\
+                    ON r.RecipeID = ingredient_details.RecipeID\
+                JOIN Users u on r.UserID = u.UserID\
+                JOIN Reviews rev on r.RecipeID = rev.RecipeID\
+                WHERE r.RecipeID = ' + str(recipe_id) + '\
+        GROUP BY r.RecipeID'
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
@@ -236,6 +239,67 @@ def get_ingredients ():
     return jsonify(json_data)
 
 
+@recipes.route('/appliances', methods=['GET'])
+def get_appliances ():
+
+    query = 'SELECT ApplianceID as code, Name as name FROM Appliances'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
+@recipes.route('/recipes/<recipe_id>/categories', methods=['GET'])
+def get_recipe_categories (recipe_id):
+
+    query = 'SELECT Type, Name FROM RecipeCategories rc JOIN Categories c on rc.CategoryID = c.CategoryID WHERE rc.RecipeID = ' + str(recipe_id)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
+@recipes.route('/categories', methods=['GET'])
+def get_category_types ():
+
+    query = 'SELECT Type as label, Type as value FROM Categories GROUP BY Type'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_dict = dict(zip(column_headers, row))
+        json_dict['children'] = get_categories (row[0])
+        json_data.append(json_dict)
+    return jsonify(json_data)
+
+
+def get_categories (type):
+
+    query = 'SELECT Name as label, CategoryID as value FROM Categories WHERE Type = "' + str(type) + '"'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return json_data
+
+
 @recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
 def get_ingredient_attrs (ingredient_id):
 
@@ -301,26 +365,50 @@ def add_recipe():
     current_app.logger.info(the_data)
 
     #extracting the variable
-    title = the_data['recipe_title']
-    description = the_data['recipe_description']
-    instructions = the_data['recipe_instructions']
-    preptime = the_data['recipe_preptime']
-    cooktime = the_data['recipe_cooktime']
-    user_id = the_data['user_id']
+    title = the_data['Title']
+    description = the_data['Description']
+    instructions = the_data['Instructions']
+    servings = the_data['Servings']
+    preptime = the_data['PrepTime']
+    cooktime = the_data['CookTime']
+    ingredients = the_data['Ingredients']
+    appliances = the_data['Appliances']
+    categories = the_data['Categories']
+    user_id = the_data['UserID']
 
     # Constructing the query
-    query = 'insert into Recipes (Title, Instructions, Servings, PrepTime, CookTime, UserTime) values ("'
-    query += title + '", "'
-    query += description + '", "'
-    query += instructions + '", '
-    query += str(preptime) + '", '
-    query += str(cooktime) + '", '
+    query = 'insert into Recipes (Title, Description, Instructions, Servings, PrepTime, CookTime, UserID) values ("'
+    query += str(title) + '", "'
+    query += str(description) + '", "'
+    query += str(instructions) + '", '
+    query += str(servings) + ', '
+    query += str(preptime) + ', '
+    query += str(cooktime) + ', '
     query += str(user_id) + ')'
     current_app.logger.info(query)
 
-    # executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
+
+    for ingredient in ingredients:
+        ingredient_query = 'insert into RecipeIngredients (RecipeID, IngredientID, Units) values ((select max(RecipeID) from Recipes), ' 
+        ingredient_query += str(ingredient) + ', 1)'
+        ingredient_cursor = db.get_db().cursor()
+        ingredient_cursor.execute(ingredient_query)
+
+    for appliance in appliances:
+        appliance_query = 'insert into RecipeAppliances (RecipeID, ApplianceID) values ((select max(RecipeID) from Recipes), '
+        appliance_query += str(appliance) + ')'
+        appliance_cursor = db.get_db().cursor()
+        appliance_cursor.execute(appliance_query)
+
+    for category in categories:
+        category_query = 'insert into RecipeCategories (RecipeID, CategoryID) values ((select max(RecipeID) from Recipes), '
+        category_query += str(category) + ')'
+        category_cursor = db.get_db().cursor()
+        category_cursor.execute(category_query)
+
+    # executing and committing the insert statement 
     db.get_db().commit()
     
     return 'Success!'
@@ -444,6 +532,8 @@ def delete_review(recipe_id, review_id):
     db.get_db().commit()
     
     return 'Success!'
+
+
 
     
 

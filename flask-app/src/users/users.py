@@ -44,7 +44,7 @@ def get_users_socials (user_id):
 @users.route('/users/<user_id>/recipes', methods=['GET'])
 def get_users_recipes (user_id):
 
-    query = 'SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
+    query = 'SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
         FROM Recipes r \
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
                 FROM Recipes r \
@@ -97,8 +97,8 @@ def get_all_plans (user_id):
 @users.route('/users/<user_id>/plans/<plan_id>', methods=['GET'])
 def get_plan_recipes (user_id, plan_id):
 
-    query = "SELECT all_recipes.RecipeID as RecipeID, Title, Description, Price, Calories, Fiber, Protein, Servings, Category, Rating FROM PlanRecipes pr\
-         JOIN (SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), '%m/%d/%Y') as PostDate, Rating\
+    query = "SELECT all_recipes.RecipeID as RecipeID, Title, Description, Price, Calories, Fiber, Protein, Servings, Rating FROM PlanRecipes pr\
+         JOIN (SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, DATE_FORMAT(DATE(PostDate), '%m/%d/%Y') as PostDate, Rating\
         FROM Recipes r\
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein\
                 FROM Recipes r\
