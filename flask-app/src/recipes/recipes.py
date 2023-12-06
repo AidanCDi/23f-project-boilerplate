@@ -378,15 +378,14 @@ def add_recipe_appliances():
     return 'Success!'
 
 
-@recipes.route('/recipes/<recipe_id>/reviews', methods=['POST'])
-def add_review(recipe_id):
+@recipes.route('/recipes/<recipe_id>/reviews/<user_id>', methods=['POST'])
+def add_review(recipe_id, user_id):
     
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
 
     #extracting the variable
-    user_id = the_data['user_id']
     review_content = the_data['review_content']
     rating = the_data['rating']
 
