@@ -187,7 +187,7 @@ def get_recipe_allergens (recipe_id):
 @recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
 def get_recipe_reviews (recipe_id):
 
-    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, Rating\
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, ReviewID, Rating\
         FROM Reviews r JOIN Users u\
         ON r.UserID = u.UserID\
         WHERE RecipeID = ' + str(recipe_id)
@@ -423,6 +423,21 @@ def edit_review(recipe_id):
     query += 'ReviewContent = "' + str(review_content) + '", '
     query += 'Rating = ' + str(rating) + ' '
     query += 'WHERE UserID = ' + str(user_id) + ' AND RecipeID = ' + str(recipe_id)
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
+@recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['DELETE'])
+def edit_review(recipe_id, review_id):
+    
+    # Constructing the query
+    query = 'DELETE FROM Reviews WHERE ReviewID = ' + str(review_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
