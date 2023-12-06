@@ -355,6 +355,7 @@ def add_recipe():
     cooktime = the_data['CookTime']
     ingredients = the_data['Ingredients']
     appliances = the_data['Appliances']
+    categories = the_data['Categories']
     user_id = the_data['UserID']
 
     # Constructing the query
@@ -368,9 +369,28 @@ def add_recipe():
     query += str(user_id) + ')'
     current_app.logger.info(query)
 
-    # executing and committing the insert statement 
     cursor = db.get_db().cursor()
     cursor.execute(query)
+
+    for ingredient in ingredients:
+        ingredient_query = 'insert into RecipeIngredients (RecipeID, IngredientID, Units) values ((select max(RecipeID) from Recipes), ' 
+        ingredient_query += str(ingredient) + ', 1)'
+        ingredient_cursor = db.get_db().cursor()
+        ingredient_cursor.execute(ingredient_query)
+
+    for appliance in appliances:
+        appliance_query = 'insert into RecipeAppliances (RecipeID, ApplianceID) values ((select max(RecipeID) from Recipes), '
+        appliance_query += str(appliance) + ')'
+        appliance_cursor = db.get_db().cursor()
+        appliance_cursor.execute(appliance_query)
+
+    for category in categories:
+        category_query = 'insert into RecipeCategories (RecipeID, CategoryID) values ((select max(RecipeID) from Recipes), '
+        category_query += str(category) + ')'
+        category_cursor = db.get_db().cursor()
+        category_cursor.execute(category_query)
+
+    # executing and committing the insert statement 
     db.get_db().commit()
     
     return 'Success!'
