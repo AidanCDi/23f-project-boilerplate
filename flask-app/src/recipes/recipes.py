@@ -187,7 +187,7 @@ def get_recipe_allergens (recipe_id):
 @recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
 def get_recipe_reviews (recipe_id):
 
-    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, ReviewContent, Rating\
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, ReviewID, Rating\
         FROM Reviews r JOIN Users u\
         ON r.UserID = u.UserID\
         WHERE RecipeID = ' + str(recipe_id)
@@ -378,15 +378,14 @@ def add_recipe_appliances():
     return 'Success!'
 
 
-@recipes.route('/recipes/<recipe_id>/reviews', methods=['POST'])
-def add_review(recipe_id):
+@recipes.route('/recipes/<recipe_id>/reviews/<user_id>', methods=['POST'])
+def add_review(recipe_id, user_id):
     
     # collecting data from the request object 
     the_data = request.json
     current_app.logger.info(the_data)
 
     #extracting the variable
-    user_id = the_data['user_id']
     review_content = the_data['review_content']
     rating = the_data['rating']
 
@@ -395,7 +394,48 @@ def add_review(recipe_id):
     query += str(user_id) + '", "'
     query += str(recipe_id) + '", "'
     query += str(review_content) + '", "'
-    query += str(rating) + ')'
+    query += str(rating) + '")'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
+@recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['PUT'])
+def edit_review(recipe_id, review_id):
+    
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    #extracting the variable
+    review_content = the_data['review_content']
+    rating = the_data['rating']
+
+    # Constructing the query
+    query = 'UPDATE Reviews SET '
+    query += 'ReviewContent = "' + str(review_content) + '", '
+    query += 'Rating = ' + str(rating) + ' '
+    query += 'WHERE ReviewID = ' + str(review_id)
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
+@recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['DELETE'])
+def delete_review(recipe_id, review_id):
+    
+    # Constructing the query
+    query = 'DELETE FROM Reviews WHERE ReviewID = ' + str(review_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 

@@ -109,7 +109,8 @@ PRIMARY KEY (ReviewID),
 FOREIGN KEY (UserID)
 REFERENCES Users(UserID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID) 
+ON DELETE cascade,
 INDEX ReviewRating (Rating)
 );
 
@@ -130,7 +131,8 @@ RecipeID INTEGER NOT NULL,
 ApplianceID INTEGER NOT NULL,
 PRIMARY KEY (RecipeID, ApplianceID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID)
+ON DELETE cascade,
 FOREIGN KEY (ApplianceID)
 REFERENCES Appliances(ApplianceID)
 );
@@ -142,7 +144,8 @@ IngredientID INTEGER NOT NULL,
 Units INTEGER NOT NULL,
 PRIMARY KEY (RecipeID, IngredientID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID)
+ON DELETE cascade,
 FOREIGN KEY (IngredientID)
 REFERENCES Ingredients(IngredientID)
 );
@@ -186,11 +189,19 @@ CREATE TABLE PlanRecipes (
 UserID INTEGER NOT NULL,
 PlanName VARCHAR(255) NOT NULL,
 RecipeID INTEGER NOT NULL,
+<<<<<<< HEAD
 PRIMARY KEY (PlanName, UserID, RecipeID),
 FOREIGN KEY (UserID, PlanName)
 REFERENCES Plans(UserID, PlanName),
+=======
+PRIMARY KEY (PlanID, UserID, RecipeID),
+FOREIGN KEY (PlanID)
+REFERENCES Plans(PlanID)
+ON DELETE cascade,
+>>>>>>> a08652ea4790e419e101b3daa3325f9985d6cea0
 FOREIGN KEY (RecipeID)
 REFERENCES Recipes(RecipeID)
+ON DELETE cascade
 );
 
 
