@@ -124,7 +124,7 @@ def get_plan_recipes (user_id, plan_name):
 @users.route('/users/<user_id>/plans/list', methods=['GET'])
 def get_all_plans_list (user_id):
 
-    query = 'SELECT PlanName as name, PlanName as code FROM Plans WHERE UserID = ' + str(user_id) 
+    query = 'SELECT PlanName as name, PlanID as code FROM Plans WHERE UserID = ' + str(user_id) 
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
