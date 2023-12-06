@@ -257,7 +257,8 @@ def get_appliances ():
 @recipes.route('/recipes/<recipe_id>/categories', methods=['GET'])
 def get_recipe_categories (recipe_id):
 
-    query = 'SELECT Type, Name FROM RecipeCategories rc JOIN Categories c on rc.CategoryID = c.CategoryID WHERE rc.RecipeID = ' + str(recipe_id)
+    query = 'SELECT Type, Name FROM RecipeCategories rc JOIN Categories c on rc.CategoryID = c.CategoryID \
+        WHERE rc.RecipeID = ' + str(recipe_id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
@@ -344,8 +345,8 @@ def get_ingredient_substitutes (ingredient_id):
     query = 'SELECT Name\
         FROM Ingredients i\
             JOIN Substitutes s\
-                ON i.IngredientID = s.IngredientID\
-        WHERE i.IngredientID = ' + str(ingredient_id)
+                ON i.IngredientID = s.SubstituteID\
+        WHERE s.IngredientID = ' + str(ingredient_id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
