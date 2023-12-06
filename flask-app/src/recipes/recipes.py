@@ -251,6 +251,36 @@ def get_appliances ():
     return jsonify(json_data)
 
 
+@recipes.route('/categories', methods=['GET'])
+def get_category_types ():
+
+    query = 'SELECT Type as label, Type as value FROM Categories GROUP BY Type'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        column_headers['children'] = get_categories (row[0])
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
+def get_categories (type):
+
+    query = 'SELECT Name as label, CategoryID as value FROM Categories WHERE Type = "' + str(type) + '"'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
 @recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
 def get_ingredient_attrs (ingredient_id):
 
@@ -460,6 +490,42 @@ def delete_review(recipe_id, review_id):
     
     return 'Success!'
 
+
+@recipes.route('/recipes', methods=['POST'])
+def add_recipe():
+    
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    #extracting the variable
+    title = the_data['Title']
+    description = the_data['Description']
+    instructions = the_data['Instructions']
+    servings = the_data['Servings']
+    preptime = the_data['PrepTime']
+    cooktime = the_data['CookTime']
+    ingredients = the_data['Ingredients']
+    appliances = the_data['Appliances']
+    user_id = the_data['UserID']
+
+    # Constructing the query
+    query = 'insert into Recipes (Title, Description, Instructions, Servings, PrepTime, CookTime, UserID) values ("'
+    query += str(title) + '", "'
+    query += str(description) + '", "'
+    query += str(instructions) + '", '
+    query += str(servings) + ', '
+    query += str(preptime) + ', '
+    query += str(cooktime) + ', '
+    query += str(user_id) + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
     
 
 # # get the top 5 products from the database
