@@ -94,8 +94,8 @@ def get_all_plans (user_id):
     return jsonify(json_data)
 
 
-@users.route('/users/<user_id>/plans/<plan_name>', methods=['GET'])
-def get_plan_recipes (user_id, plan_name):
+@users.route('/users/<user_id>/plans/<plan_id>', methods=['GET'])
+def get_plan_recipes (user_id, plan_id):
 
     query = "SELECT all_recipes.RecipeID as RecipeID, Title, Description, Price, Calories, Fiber, Protein, Servings, Category, Rating FROM PlanRecipes pr\
          JOIN (SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, Category, DATE_FORMAT(DATE(PostDate), '%m/%d/%Y') as PostDate, Rating\
@@ -108,7 +108,7 @@ def get_plan_recipes (user_id, plan_name):
                 GROUP BY r.RecipeID) recipe_attributes\
                 ON r.RecipeID = recipe_attributes.RecipeID\
                     LEFT OUTER JOIN (SELECT RecipeID, round(avg(Rating), 2) as Rating FROM Reviews GROUP BY RecipeID) reviews ON r.RecipeID = reviews.RecipeID) all_recipes ON pr.RecipeID = all_recipes.RecipeID\
-         WHERE PlanName = " + str(plan_name) + " AND UserID = " + str(user_id)
+         WHERE PlanID = " + str(plan_id) + " AND UserID = " + str(user_id)
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
