@@ -395,7 +395,7 @@ def add_review(recipe_id):
     query += str(user_id) + '", "'
     query += str(recipe_id) + '", "'
     query += str(review_content) + '", "'
-    query += str(rating) + ')'
+    query += str(rating) + '")'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
