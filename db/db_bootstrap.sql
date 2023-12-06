@@ -1,8 +1,8 @@
 CREATE DATABASE IF NOT EXISTS MealPrepPlus;
 
 
-#GRANT ALL PRIVILEGES ON MealPrepPlus.* TO 'webapp'@'%';
-#FLUSH PRIVILEGES;
+GRANT ALL PRIVILEGES ON MealPrepPlus.* TO 'webapp'@'%';
+FLUSH PRIVILEGES;
 
 
 USE MealPrepPlus;
@@ -401,221 +401,115 @@ INSERT INTO Ingredients (Name, UnitPrice, UnitCalories, UnitProtein, UnitFiber) 
 ('BBQ Sauce', 3.99, 50, 0, 0),
 ('Brioche Buns', 2.00, 180, 4, 1),
 ('Coleslaw', 4.50, 120, 1, 3),
-
-('Shrimp', 9.99, 200, 20, 0),
 ('Linguine Pasta', 2.50, 350, 8, 2),
 ('Garlic', 0.50, 5, 1, 0), -- 8
 ('White Wine', 5.00, 120, 0, 0),
 ('Lemon Juice', 1.50, 10, 0, 0),
-('Parsley', 1.00, 5, 0, 1),
-
-('Black Beans', 1.29, 200, 10, 8),
 ('Corn', 1.99, 90, 3, 2),
 ('Tomatoes', 3.99, 30, 1, 2),
 ('Cilantro', 1.50, 5, 0, 1),
 ('Lime Juice', 2.00, 15, 0, 0),
 ('Salt', 0.50, 0, 0, 0),
-
 ('Chicken Breasts', 6.99, 200, 25, 0),
-('Spinach', 2.50, 20, 3, 2),
 ('Feta Cheese', 3.99, 100, 5, 0),
 ('Pepper', 0.75, 0, 0, 0),
-
 ('Chicken', 7.99, 200, 25, 0),
 ('Teriyaki Sauce', 4.00, 80, 2, 0),
 ('Skewers', 2.50, 0, 0, 0),
-('Rice', 1.50, 150, 3, 1),
 ('Vegetables', 3.50, 50, 2, 3),
-
 ('Basil', 1.99, 10, 1, 1),
 ('Pine Nuts', 3.50, 100, 3, 2),
 ('Parmesan Cheese', 3.99, 150, 10, 0),
 ('Cherry Tomatoes', 2.99, 30, 1, 1),
-('Pepper', 0.75, 0, 0, 0),
-
 ('Mushrooms', 2.99, 20, 2, 1),
-('Onions', 0.99, 40, 1, 2),
 ('Arborio Rice', 3.50, 200, 4, 1),
 ('Chicken Broth', 2.00, 10, 1, 0),
 ('Parsley', 1.00, 5, 0, 1),
-('Pepper', 0.75, 0, 0, 0),
-
 ('Salmon Fillets', 8.99, 350, 40, 0),
 ('Honey', 3.50, 60, 0, 0),
 ('Mustard', 1.99, 10, 1, 0),
 ('Soy Sauce', 2.00, 10, 1, 0),
 ('Lemon Wedges', 1.50, 5, 0, 1),
-
 ('Pizza Dough', 3.99, 150, 5, 1),
 ('Pizza Sauce', 2.50, 50, 1, 2),
 ('Cheese', 4.50, 200, 10, 0),
 ('Toppings (e.g., Pepperoni, Mushrooms, Bell Peppers)', 2.00, 30, 2, 2),
-
 ('Beef Strips', 7.99, 250, 20, 0),
 ('Broccoli', 2.50, 30, 2, 3),
-('Soy Sauce', 2.00, 10, 1, 0),
 ('Rice', 1.50, 150, 3, 1),
-
 ('Spices (e.g., Paprika, Garlic Powder, Salt, Pepper)', 2.50, 5, 0, 1),
 ('Chicken Thighs', 7.99, 250, 20, 0),
-
 ('Salmon Fillets', 8.99, 350, 40, 0),
-('Lemon Juice', 0.75, 10, 0, 1),
 ('Dill', 1.50, 10, 1, 1),
 ('Yogurt', 3.00, 150, 8, 0),
-
 ('Lasagna Noodles', 2.50, 200, 8, 2),
-('Assorted Vegetables', 3.50, 50, 2, 3),
 ('Cheese (e.g., Mozzarella, Parmesan)', 4.50, 200, 10, 0),
 ('Tomato Sauce', 2.00, 30, 1, 2),
-
 ('Mango', 2.99, 60, 1, 3),
-('Avocado', 1.50, 120, 2, 6),
 ('Red Onion', 1.50, 45, 1, 2),
-('Cilantro', 1.50, 5, 0, 1),
-
 ('Cucumbers', 2.50, 20, 1, 2),
 ('Olives', 2.00, 50, 1, 3),
-('Feta Cheese', 3.99, 100, 5, 0),
-('Lemon Juice', 1.50, 10, 0, 0),
-
 ('Ground Beef', 5.99, 250, 20, 0),
-('Onions', 0.99, 40, 1, 2),
 ('Italian Seasonings', 1.50, 5, 0, 1),
-
-('Assorted Vegetables', 3.50, 50, 2, 3),
 ('Taco Spices', 2.00, 10, 1, 0),
 ('Tortillas', 2.50, 150, 3, 1),
 ('Beans', 1.50, 100, 5, 5),
 ('Toppings (e.g., lettuce, tomatoes, cheese)', 2.50, 30, 1, 2),
-
 ('Flour', 2.99, 100, 2, 1),
 ('Baking Powder', 1.50, 5, 0, 0),
 ('Sugar', 2.00, 50, 0, 0),
 ('Eggs', 1.99, 70, 6, 0),
 ('Vanilla Extract', 2.50, 10, 0, 0),
 ('Cocoa Powder', 3.50, 20, 1, 1),
-
 ('Mozzarella', 4.50, 200, 10, 0),
-('Basil', 1.50, 5, 0, 1),
 ('Balsamic Glaze', 2.50, 15, 0, 0),
-
-('Flour', 2.99, 100, 2, 1),
-('Baking Powder', 1.50, 5, 0, 0),
 ('Milk', 3.00, 80, 4, 0),
 ('Blueberries', 4.50, 30, 1, 2),
-
 ('Pasta', 2.50, 200, 8, 2),
 ('Heavy Cream', 3.50, 120, 1, 0),
-
 ('Quinoa', 4.50, 150, 5, 2),
 ('Assorted Vegetables', 3.50, 50, 2, 3),
-('Feta Cheese', 3.99, 100, 5, 0),
-('Lemon Juice', 1.50, 10, 0, 0),
-
-('Shrimp', 9.99, 200, 20, 0),
-('Lemon Juice', 1.50, 10, 0, 0),
 ('Lemon Zest', 1.00, 5, 0, 0),
-
 ('Mixed Berries', 4.99, 50, 1, 8),
-('Yogurt', 3.00, 120, 8, 0),
-('Honey', 2.50, 60, 0, 1),
 ('Granola', 3.50, 100, 3, 2),
 ('Sliced Fruits', 2.00, 30, 1, 2),
 ('Chia Seeds', 2.99, 20, 1, 5),
-
-('Assorted Vegetables', 3.50, 50, 2, 3),
 ('Sesame Oil', 3.00, 120, 0, 0),
-('Soy Sauce', 2.00, 10, 1, 0),
-('Ginger', 1.50, 5, 0, 1),
 ('Rice or Noodles', 1.50, 150, 3, 1),
-
 ('Lemon', 0.75, 17, 0.5, 2),
 ('Olive Oil', 2.99, 120, 0, 0),
 ('Mixed Herbs', 1.25, 5, 0.2, 0.5),
-
-('Arborio Rice', 2.5, 150, 3, 1),
 ('Butternut Squash', 1.99, 82, 2, 3),
 ('Sage', 1.25, 4, 0.2, 1),
 ('Onion', 0.75, 40, 1, 1),
-
-
 ('Shrimp', 5.99, 120, 20, 0),
 ('Sausage', 4.99, 250, 12, 0),
 ('Cajun Seasoning', 1.5, 5, 0.2, 1),
 ('Rice or Pasta', 1.99, 200, 5, 3),
-('Vegetables', 2.5, 50, 2, 2),
-
-
-('Quinoa', 3.5, 120, 4, 3),
 ('Zucchini', 2.0, 20, 1, 2),
-('Cherry Tomatoes', 2.99, 15, 1, 1),
 ('Kalamata Olives', 4.5, 40, 1, 2),
-('Feta Cheese', 3.75, 60, 4, 0.5),
-
 ('Tomatoes', 2.5, 15, 1, 1),
 ('Fresh Basil', 1.99, 5, 0.5, 0.5),
 ('Baguette', 2.0, 100, 3, 1),
-('Balsamic Glaze', 4.5, 30, 0, 0),
-
-('Salmon Fillets', 7.99, 200, 25, 0),
-('Sesame Oil', 4.0, 120, 0, 0),
-('Soy Sauce', 2.5, 10, 2, 0),
 ('Ginger', 1.99, 5, 0.2, 0),
 ('Sesame Seeds', 3.0, 30, 1, 1),
 ('Green Onions', 1.25, 5, 0.2, 1),
-
-
 ('Sweet Potatoes', 2.5, 112, 2, 4),
+('Chili Powder', 1.99, 5, 0.2, 1),
+('Avocado', 2.0, 50, 1, 2),
+('Poppy Seeds', 2.5, 30, 1, 1),
+('Powdered Sugar', 3.0, 30, 0, 0),
 ('Black Beans', 1.5, 120, 6, 5),
 ('Onions', 0.75, 40, 1, 1),
-('Chili Powder', 1.99, 5, 0.2, 1),
-('Cumin', 1.5, 5, 0.2, 1),
-('Avocado', 2.0, 50, 1, 2),
-('Cilantro', 1.25, 5, 0.2, 0.5),
-
-('Flour', 1.99, 100, 3, 1),
-('Baking Powder', 1.0, 0, 0, 0),
-('Poppy Seeds', 2.5, 30, 1, 1),
-('Lemon Zest', 1.99, 5, 0.2, 0.5),
-('Lemon Juice', 2.5, 10, 0.2, 0),
-('Powdered Sugar', 3.0, 30, 0, 0),
-
-('Salmon Fillets', 7.99, 200, 25, 0),
-('Sesame Oil', 4.0, 120, 0, 0),
-('Soy Sauce', 2.5, 10, 2, 0),
-('Ginger', 1.99, 5, 0.2, 0),
-('Sesame Seeds', 3.0, 30, 1, 1),
-('Green Onions', 1.25, 5, 0.2, 1),
-
-('Sweet Potatoes', 2.5, 112, 2, 4),
-('Black Beans', 1.5, 120, 6, 5),
-('Onions', 0.75, 40, 1, 1),
-('Chili Powder', 1.99, 5, 0.2, 1),
-('Cumin', 1.5, 5, 0.2, 1),
-('Avocado', 2.0, 50, 1, 2),
-('Cilantro', 1.25, 5, 0.2, 0.5),
-
-('Flour', 1.99, 100, 3, 1),
-('Baking Powder', 1.0, 0, 0, 0),
-('Poppy Seeds', 2.5, 30, 1, 1),
-('Lemon Zest', 1.99, 5, 0.2, 0.5),
-('Lemon Juice', 2.5, 10, 0.2, 0),
-('Powdered Sugar', 3.0, 30, 0, 0),
-
 ('Chickpeas', 1.5, 130, 7, 5),
 ('Spinach', 2.99, 20, 2, 2),
-('Onions', 0.75, 40, 1, 1),
 ('Tomatoes', 2.99, 15, 1, 1),
 ('Coconut Milk', 3.0, 120, 1, 0),
 ('Curry Powder', 1.99, 5, 0.2, 1),
 ('Cumin', 1.5, 5, 0.2, 1),
-
 ('Peaches', 3.0, 60, 1, 2),
 ('Raspberries', 4.5, 32, 1, 8),
-('Lemon Juice', 2.5, 10, 0.2, 0),
 ('Oats', 1.99, 120, 3, 5),
-('Flour', 1.99, 100, 3, 1),
 ('Butter', 3.5, 100, 0, 0),
 ('Cinnamon', 1.5, 5, 0.2, 1);
 
@@ -630,7 +524,6 @@ INSERT INTO RecipeIngredients (RecipeID, IngredientID, Units) VALUES
 (35, 64, 0.5),
 (35, 65, 0.5),
 (35, 66, 0.5);
-
 
 
 -- RecipeIngredients for Chickpea and Spinach Curry
@@ -1546,7 +1439,7 @@ INSERT INTO Plans (UserID, PlanName) VALUES
 (16, 'Vegan Bliss'),
 (17, 'Gluten-Free Goodness'),
 (18, 'Tropical Treats'),
-(19, "Grill Master's Plan"),
+(19, 'Grill Masters Plan'),
 (20, 'Student Survival Kit');
 
 -- Assign recipes to Weekly Meal Prep
