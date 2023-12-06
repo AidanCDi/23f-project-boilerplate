@@ -73,7 +73,7 @@ def get_all_plans (user_id):
     query = 'SELECT p.PlanName, COUNT(pr.RecipeID) as Recipe, SUM(Price) as Price\
         FROM Plans p\
             JOIN PlanRecipes pr\
-                ON p.PlanName = pr.PlanName AND p.UserID = pr.UserID\
+                ON p.PlanID = pr.PlanID\
             JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price\
                 FROM Recipes r\
                     LEFT OUTER JOIN RecipeIngredients ri on r.RecipeID = ri.RecipeID\
@@ -81,7 +81,7 @@ def get_all_plans (user_id):
                 GROUP BY r.RecipeID) recipe_attributes\
                 ON pr.RecipeID = recipe_attributes.RecipeID\
         WHERE p.UserID = ' + str(user_id) + '\
-        GROUP BY p.PlanName ' 
+        GROUP BY p.PlanID ' 
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
