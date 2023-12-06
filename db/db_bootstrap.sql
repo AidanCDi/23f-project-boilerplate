@@ -1438,9 +1438,9 @@ INSERT INTO Plans (UserID, PlanName) VALUES
 
 -- Assign recipes to Weekly Meal Prep
 INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
-(1, 1, 1),
-(1, 1, 6),
-(1, 1, 9),
+(1, 1, 25),
+(1, 1, 24),
+(1, 1, 23),
 (1, 1, 12),
 (1, 1, 17);
 
