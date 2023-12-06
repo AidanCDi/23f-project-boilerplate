@@ -121,7 +121,8 @@ RecipeID INTEGER NOT NULL,
 CategoryID INTEGER NOT NULL,
 PRIMARY KEY (RecipeID, CategoryID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID)
+ON DELETE cascade,
 FOREIGN KEY (CategoryID)
 REFERENCES Categories(CategoryID)
 );

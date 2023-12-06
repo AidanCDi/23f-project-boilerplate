@@ -78,20 +78,23 @@ def get_recipes():
 @recipes.route('/recipes/<recipe_id>', methods=['GET'])
 def get_recipe_details (recipe_id):
 
-    query = 'SELECT Title, Description, Instructions, Servings, PrepTime, CookTime, Price, Calories, Protein, Fiber\
+    query = 'SELECT Title, Description, Instructions, Servings, PrepTime, CookTime, Price, Calories, Protein, Fiber, CONCAT(FirstName, " ", LastName) as Name, avg(Rating)\
         FROM Recipes r JOIN (SELECT ri.RecipeID,\
-                                SUM(Units * UnitPrice) as Price,\
-                                ROUND(SUM(Units * UnitCalories) / Servings) as Calories,\
-                                ROUND(SUM(Units * UnitProtein) / Servings) as Protein,\
-                                ROUND(SUM(Units * UnitFiber) / Servings) as Fiber\
-                            FROM Ingredients i\
-                                JOIN RecipeIngredients ri\
-                                    ON i.IngredientID = ri.IngredientID\
-                                JOIN Recipes r\
-                                    ON ri.RecipeID = r.RecipeID\
-                            WHERE ri.RecipeID = ' + str(recipe_id) + ') ingredient_details\
-            ON r.RecipeID = ingredient_details.RecipeID\
-        WHERE r.RecipeID = ' + str(recipe_id)
+                                        SUM(Units * UnitPrice) as Price,\
+                                        ROUND(SUM(Units * UnitCalories) / Servings) as Calories,\
+                                        ROUND(SUM(Units * UnitProtein) / Servings) as Protein,\
+                                        ROUND(SUM(Units * UnitFiber) / Servings) as Fiber\
+                                    FROM Ingredients i\
+                                        JOIN RecipeIngredients ri\
+                                            ON i.IngredientID = ri.IngredientID\
+                                        JOIN Recipes r\
+                                            ON ri.RecipeID = r.RecipeID\
+                                    WHERE ri.RecipeID = ' + str(recipe_id) + ') ingredient_details\
+                    ON r.RecipeID = ingredient_details.RecipeID\
+                JOIN Users u on r.UserID = u.UserID\
+                JOIN Reviews rev on r.RecipeID = rev.RecipeID\
+                WHERE r.RecipeID = ' + str(recipe_id) + '\
+        GROUP BY r.RecipeID'
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
@@ -240,6 +243,21 @@ def get_ingredients ():
 def get_appliances ():
 
     query = 'SELECT ApplianceID as code, Name as name FROM Appliances'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+
+@recipes.route('/recipe/<recipe_id>/categories', methods=['GET'])
+def get_recipe_categories ():
+
+    query = 'SELECT * FROM Categories'
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
