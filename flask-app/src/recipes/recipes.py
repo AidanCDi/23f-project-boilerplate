@@ -434,7 +434,7 @@ def edit_review(recipe_id):
 
 
 @recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['DELETE'])
-def edit_review(recipe_id, review_id):
+def delete_review(recipe_id, review_id):
     
     # Constructing the query
     query = 'DELETE FROM Reviews WHERE ReviewID = ' + str(review_id)
