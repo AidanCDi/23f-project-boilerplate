@@ -81,9 +81,10 @@ INDEX AllergenNameIndex (Name)
 
 
 CREATE TABLE Plans (
+PlanID INTEGER AUTO_INCREMENT NOT NULL UNIQUE,
 UserID INTEGER NOT NULL,
 PlanName VARCHAR(255) NOT NULL,
-PRIMARY KEY (UserID, PlanName),
+PRIMARY KEY (PlanID),
 FOREIGN KEY (UserID)
 REFERENCES Users(UserID)
 );
@@ -186,19 +187,13 @@ REFERENCES Allergens(AllergenID)
 
 
 CREATE TABLE PlanRecipes (
+PlanID INTEGER NOT NULL,
 UserID INTEGER NOT NULL,
-PlanName VARCHAR(255) NOT NULL,
 RecipeID INTEGER NOT NULL,
-<<<<<<< HEAD
-PRIMARY KEY (PlanName, UserID, RecipeID),
-FOREIGN KEY (UserID, PlanName)
-REFERENCES Plans(UserID, PlanName),
-=======
 PRIMARY KEY (PlanID, UserID, RecipeID),
 FOREIGN KEY (PlanID)
 REFERENCES Plans(PlanID)
 ON DELETE cascade,
->>>>>>> a08652ea4790e419e101b3daa3325f9985d6cea0
 FOREIGN KEY (RecipeID)
 REFERENCES Recipes(RecipeID)
 ON DELETE cascade
@@ -717,44 +712,6 @@ INSERT INTO RecipeIngredients (RecipeID, IngredientID, Units) VALUES
 (32, 39, 1),
 (32, 40, 0.5),
 (32, 41, 0.5);
-
-
--- RecipeIngredients for Sesame Ginger Glazed Salmon
-INSERT INTO RecipeIngredients (RecipeID, IngredientID, Units) VALUES
-(31, 26, 2),
-(31, 27, 0.5),
-(31, 28, 1),
-(31, 29, 1),
-(31, 30, 0.5),
-(31, 31, 1),
-(31, 32, 0.5);
-
-
--- RecipeIngredients for Lemon Poppy Seed Muffins
-INSERT INTO RecipeIngredients (RecipeID, IngredientID, Units) VALUES
-(33, 42, 2),
-(33, 43, 1),
-(33, 44, 1),
-(33, 45, 0.5),
-(33, 46, 1),
-(33, 47, 2),
-(33, 48, 1),
-(33, 49, 0.5),
-(33, 50, 0.5);
-
-
--- RecipeIngredients for Sweet Potato Black Bean Chili
-INSERT INTO RecipeIngredients (RecipeID, IngredientID, Units) VALUES
-(32, 33, 2),
-(32, 34, 1),
-(32, 35, 1),
-(32, 36, 2),
-(32, 37, 1),
-(32, 38, 1),
-(32, 39, 1),
-(32, 40, 0.5),
-(32, 41, 0.5);
-
 
 
 -- RecipeIngredients for Sesame Ginger Glazed Salmon
@@ -1634,127 +1591,127 @@ INSERT INTO Plans (UserID, PlanName) VALUES
 (16, 'Vegan Bliss'),
 (17, 'Gluten-Free Goodness'),
 (18, 'Tropical Treats'),
-(19, 'Grill Master\'s Plan'),
+(19, "Grill Master's Plan"),
 (20, 'Student Survival Kit');
 
 -- Assign recipes to Weekly Meal Prep
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(1, 'Weekly Meal Prep', 1),
-(1, 'Weekly Meal Prep', 6),
-(1, 'Weekly Meal Prep', 9),
-(1, 'Weekly Meal Prep', 12),
-(1, 'Weekly Meal Prep', 17);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(1, 1, 1),
+(1, 1, 6),
+(1, 1, 9),
+(1, 1, 12),
+(1, 1, 17);
 
 -- Assign recipes to Vegetarian Delight
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(2, 'Vegetarian Delight', 2),
-(2, 'Vegetarian Delight', 7),
-(2, 'Vegetarian Delight', 14),
-(2, 'Vegetarian Delight', 20);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(2, 2, 2),
+(2, 2, 7),
+(2, 2, 14),
+(2, 2, 20);
 
 -- Assign recipes to Quick and Easy Dinners
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(3, 'Quick and Easy Dinners', 3),
-(3, 'Quick and Easy Dinners', 8),
-(3, 'Quick and Easy Dinners', 15),
-(3, 'Quick and Easy Dinners', 21);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(3, 3, 3),
+(3, 3, 8),
+(3, 3, 15),
+(3, 3, 21);
 
 -- Assign recipes to Family Favorites
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(4, 'Family Favorites', 4),
-(4, 'Family Favorites', 11),
-(4, 'Family Favorites', 16),
-(4, 'Family Favorites', 23);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(4, 4, 4),
+(4, 4, 11),
+(4, 4, 16),
+(4, 4, 23);
 
 -- Assign recipes to Healthy Choices
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(5, 'Healthy Choices', 5),
-(5, 'Healthy Choices', 10),
-(5, 'Healthy Choices', 18),
-(5, 'Healthy Choices', 24);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(5, 5, 5),
+(5, 5, 10),
+(5, 5, 18),
+(5, 5, 24);
 
 -- Assign recipes to Italian Feast
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(6, 'Italian Feast', 6),
-(6, 'Italian Feast', 12),
-(6, 'Italian Feast', 17),
-(6, 'Italian Feast', 25);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(6, 6, 6),
+(6, 6, 12),
+(6, 6, 17),
+(6, 6, 25);
 
 -- Assign recipes to Mexican Fiesta
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(7, 'Mexican Fiesta', 7),
-(7, 'Mexican Fiesta', 14),
-(7, 'Mexican Fiesta', 20);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(7, 7, 7),
+(7, 7, 14),
+(7, 7, 20);
 
 -- Assign recipes to Low-Carb Lifestyle
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(8, 'Low-Carb Lifestyle', 8),
-(8, 'Low-Carb Lifestyle', 15),
-(8, 'Low-Carb Lifestyle', 21);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(8, 8, 8),
+(8, 8, 15),
+(8, 8, 21);
 
 -- Assign recipes to Breakfast Bonanza
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(9, 'Breakfast Bonanza', 9),
-(9, 'Breakfast Bonanza', 13),
-(9, 'Breakfast Bonanza', 19);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(9, 9, 9),
+(9, 9, 13),
+(9, 9, 19);
 
 -- Assign recipes to Asian Flavors
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(10, 'Asian Flavors', 10),
-(10, 'Asian Flavors', 16),
-(10, 'Asian Flavors', 22);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(10, 10, 10),
+(10, 10, 16),
+(10, 10, 22);
 
 -- Assign recipes to Mediterranean Delicacies
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(11, 'Mediterranean Delicacies', 11),
-(11, 'Mediterranean Delicacies', 14),
-(11, 'Mediterranean Delicacies', 20);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(11, 11, 11),
+(11, 11, 14),
+(11, 11, 20);
 
 -- Assign recipes to Comfort Food Cravings
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(12, 'Comfort Food Cravings', 12),
-(12, 'Comfort Food Cravings', 17),
-(12, 'Comfort Food Cravings', 25);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(12, 12, 12),
+(12, 12, 17),
+(12, 12, 25);
 
 -- Assign recipes to Protein-Packed Power
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(13, 'Protein-Packed Power', 17),
-(13, 'Protein-Packed Power', 22);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(13, 13, 17),
+(13, 13, 22);
 
 -- Assign recipes to Balanced Nutrition
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(14, 'Balanced Nutrition', 14),
-(14, 'Balanced Nutrition', 20);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(14, 14, 14),
+(14, 14, 20);
 
 -- Assign recipes to Date Night Specials
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(15, 'Date Night Specials', 15),
-(15, 'Date Night Specials', 21);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(15, 15, 15),
+(15, 15, 21);
 
 -- Assign recipes to Vegan Bliss
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(16, 'Vegan Bliss', 2),
-(16, 'Vegan Bliss', 7),
-(16, 'Vegan Bliss', 14),
-(16, 'Vegan Bliss', 20);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(16, 16, 2),
+(16, 16, 7),
+(16, 16, 14),
+(16, 16, 20);
 
 -- Assign recipes to Gluten-Free Goodness
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(17, 'Gluten-Free Goodness', 18),
-(17, 'Gluten-Free Goodness', 24);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(17, 17, 18),
+(17, 17, 24);
 
 -- Assign recipes to Tropical Treats
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(18, 'Tropical Treats', 19);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(18, 18, 19);
 
 -- Assign recipes to Grill Master's Plan
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(19, 'Grill Master\'s Plan', 21),
-(19, 'Grill Master\'s Plan', 23);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(19, 19, 21),
+(19, 19, 23);
 
 -- Assign recipes to Student Survival Kit
-INSERT INTO PlanRecipes (UserID, PlanName, RecipeID) VALUES
-(20, 'Student Survival Kit', 10),
-(20, 'Student Survival Kit', 15),
-(20, 'Student Survival Kit', 20);
+INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
+(20, 20, 10),
+(20, 20, 15),
+(20, 20, 20);
 
