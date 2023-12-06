@@ -274,7 +274,7 @@ def get_ingredient_allergens (ingredient_id):
     return jsonify(json_data)
 
 
-@recipes.route('/ingredients/<ingredient_id>/subtitutes', methods=['GET'])
+@recipes.route('/ingredients/<ingredient_id>/substitutes', methods=['GET'])
 def get_ingredient_substitutes (ingredient_id):
 
     query = 'SELECT Name\
