@@ -5,22 +5,9 @@ from src import db
 
 users = Blueprint('users', __name__)
 
-@users.route('/users', methods=['GET'])
-def get_users ():
+### GET Routes ###
 
-    query = 'SELECT CONCAT(FirstName, " ", LastName) as name, UserID as code FROM Users'
-    current_app.logger.info(query)
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
-
-
+# Get relevant information for a specific user (their socials, any recipes they posted, and any meal plans they've created)
 @users.route('/users/<user_id>/socials', methods=['GET'])
 def get_users_socials (user_id):
 
@@ -39,7 +26,6 @@ def get_users_socials (user_id):
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
-
 
 @users.route('/users/<user_id>/recipes', methods=['GET'])
 def get_users_recipes (user_id):
@@ -66,15 +52,14 @@ def get_users_recipes (user_id):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
-
 @users.route('/users/<user_id>/plans', methods=['GET'])
 def get_all_plans (user_id):
 
     query = 'SELECT p.PlanName, p.PlanID, COUNT(pr.RecipeID) as Recipe, SUM(Price) as Price\
         FROM Plans p\
-            JOIN PlanRecipes pr\
+            LEFT OUTER JOIN PlanRecipes pr\
                 ON p.PlanID = pr.PlanID\
-            JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price\
+            LEFT OUTER JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price\
                 FROM Recipes r\
                     LEFT OUTER JOIN RecipeIngredients ri on r.RecipeID = ri.RecipeID\
                     JOIN Ingredients i on ri.IngredientID = i.IngredientID\
@@ -94,6 +79,9 @@ def get_all_plans (user_id):
     return jsonify(json_data)
 
 
+
+
+# Gets information about a specific meal plan
 @users.route('/users/<user_id>/plans/<plan_id>', methods=['GET'])
 def get_plan_recipes (user_id, plan_id):
 
@@ -121,6 +109,25 @@ def get_plan_recipes (user_id, plan_id):
     return jsonify(json_data)
 
 
+
+
+
+# Populates dropdowns
+@users.route('/users', methods=['GET'])
+def get_users ():
+
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as name, UserID as code FROM Users'
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
 @users.route('/users/<user_id>/plans/list', methods=['GET'])
 def get_all_plans_list (user_id):
 
@@ -137,8 +144,15 @@ def get_all_plans_list (user_id):
     return jsonify(json_data)
 
 
+
+
+
+
+### POST Routes ###
+
+# adds a meal plan to a user's profile
 @users.route('/users/<user_id>/plans', methods=['POST'])
-def add_review(user_id):
+def add_meal_plan(user_id):
     
     # collecting data from the request object 
     the_data = request.json
@@ -148,9 +162,9 @@ def add_review(user_id):
     plan_name = the_data['plan_name']
 
     # Constructing the query
-    query = 'insert into RecipeAppliances (UserID, PlanName) values ("'
-    query += str(user_id) + '", "'
-    query += plan_name +  ')'
+    query = 'insert into Plans (UserID, PlanName) values ('
+    query += str(user_id) + ', "'
+    query += plan_name +  ' ")'
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
@@ -161,6 +175,12 @@ def add_review(user_id):
     return 'Success!'
 
 
+### PUT Routes ###
+
+
+### DELETE Routes ###
+
+# Deletes a certain meal plan created by a certain user
 @users.route('/users/<user_id>/plans/<plan_id>', methods=['DELETE'])
 def delete_plan(user_id, plan_id):
     
@@ -176,6 +196,7 @@ def delete_plan(user_id, plan_id):
     return 'Success!'
 
 
+# Deletes a certain recipe posted by a certain user
 @users.route('/users/<user_id>/recipes/<recipe_id>', methods=['DELETE'])
 def delete_recipe(user_id, recipe_id):
     
