@@ -262,8 +262,9 @@ def get_category_types ():
     json_data = []
     the_data = cursor.fetchall()
     for row in the_data:
-        column_headers['children'] = get_categories (row[0])
-        json_data.append(dict(zip(column_headers, row)))
+        json_dict = dict(zip(column_headers, row))
+        json_dict['children'] = get_categories (row[0])
+        json_data.append(json_dict)
     return jsonify(json_data)
 
 
@@ -278,7 +279,7 @@ def get_categories (type):
     the_data = cursor.fetchall()
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
+    return json_data
 
 
 @recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
