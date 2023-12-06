@@ -188,16 +188,10 @@ CREATE TABLE PlanRecipes (
 PlanID INTEGER NOT NULL,
 UserID INTEGER NOT NULL,
 RecipeID INTEGER NOT NULL,
-<<<<<<< HEAD
-PRIMARY KEY (PlanName, UserID, RecipeID),
-FOREIGN KEY (UserID, PlanName)
-REFERENCES Plans(UserID, PlanName),
-=======
 PRIMARY KEY (PlanID, UserID, RecipeID),
 FOREIGN KEY (PlanID)
 REFERENCES Plans(PlanID)
 ON DELETE cascade,
->>>>>>> b4df61791c70d15761a60ac256249accd0cdcdd6
 FOREIGN KEY (RecipeID)
 REFERENCES Recipes(RecipeID)
 );
