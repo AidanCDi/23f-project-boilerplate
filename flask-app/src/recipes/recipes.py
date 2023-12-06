@@ -254,10 +254,10 @@ def get_appliances ():
     return jsonify(json_data)
 
 
-@recipes.route('/recipe/<recipe_id>/categories', methods=['GET'])
-def get_recipe_categories ():
+@recipes.route('/recipes/<recipe_id>/categories', methods=['GET'])
+def get_recipe_categories (recipe_id):
 
-    query = 'SELECT * FROM Categories'
+    query = 'SELECT Type, Name FROM RecipeCategories rc JOIN Categories c on rc.CategoryID = c.CategoryID WHERE rc.RecipeID = ' + str(recipe_id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
