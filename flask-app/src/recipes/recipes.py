@@ -239,7 +239,7 @@ def get_ingredient_attrs (recipe_id, ingredient_id):
 
 
 @recipes.route('/ingredients', methods=['GET'])
-def get_ingredient_allergens ():
+def get_ingredients ():
 
     query = 'SELECT IngredientID as code, Name as name FROM Ingredients'
 
@@ -274,7 +274,7 @@ def get_ingredient_allergens (ingredient_id):
     return jsonify(json_data)
 
 
-@recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
+@recipes.route('/ingredients/<ingredient_id>/subtitutes', methods=['GET'])
 def get_ingredient_substitutes (ingredient_id):
 
     query = 'SELECT Name\
