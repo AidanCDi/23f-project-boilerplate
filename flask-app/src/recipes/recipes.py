@@ -5,7 +5,9 @@ from src import db
 
 recipes = Blueprint('recipes', __name__)
 
-# Get all the recipes from the database
+### GET Routes ###
+
+# Gets a table of all recipes
 @recipes.route('/recipes', methods=['GET'])
 def get_recipes():
     # get a cursor object from the database
@@ -41,40 +43,11 @@ def get_recipes():
     return jsonify(json_data)
 
 
-def get_recipes():
-    # get a cursor object from the database
-    cursor = db.get_db().cursor()
 
-    # use cursor to query the database for a list of recipes
-    cursor.execute('SELECT r.RecipeID as RecipeID, Title, Description, Instructions, Price, ROUND(Calories / Servings) as Calories, ROUND(Fiber / Servings) as Fiber, ROUND(Protein / Servings) as Protein, Servings, DATE_FORMAT(DATE(PostDate), "%m/%d/%Y") as PostDate, Rating \
-        FROM Recipes r \
-            JOIN (SELECT r.RecipeID, sum(ri.Units * i.UnitPrice) as Price, sum(i.UnitCalories) as Calories, sum(i.UnitFiber) as Fiber, sum(i.UnitProtein) as Protein \
-                FROM Recipes r \
-                    LEFT OUTER JOIN RecipeIngredients ri \
-                        ON r.RecipeID = ri.RecipeID \
-                    JOIN Ingredients i on ri.IngredientID = i.IngredientID \
-                GROUP BY r.RecipeID) recipe_attributes \
-                ON r.RecipeID = recipe_attributes.RecipeID \
-                    LEFT OUTER JOIN (SELECT RecipeID, round(avg(Rating), 2) as Rating FROM Reviews GROUP BY RecipeID) reviews ON r.RecipeID = reviews.RecipeID')
 
-    # grab the column headers from the returned data
-    column_headers = [x[0] for x in cursor.description]
 
-    # create an empty dictionary object to use in 
-    # putting column headers together with data
-    json_data = []
 
-    # fetch all the data from the cursor
-    theData = cursor.fetchall()
-
-    # for each of the rows, zip the data elements together with
-    # the column headers. 
-    for row in theData:
-        json_data.append(dict(zip(column_headers, row)))
-
-    return jsonify(json_data)
-    
-
+# Gets a list of attributes for a specific recipe/ingredient
 @recipes.route('/recipes/<recipe_id>', methods=['GET'])
 def get_recipe_details (recipe_id):
 
@@ -106,12 +79,12 @@ def get_recipe_details (recipe_id):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
+@recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
+def get_ingredient_attrs (ingredient_id):
 
-@recipes.route('/recipes/list', methods=['GET'])
-def get_recipes_list ():
-
-    query = 'SELECT Title as name, RecipeID as code FROM Recipes'
-    current_app.logger.info(query)
+    query = 'SELECT Name, UnitPrice, UnitCalories, UnitProtein, UnitFiber\
+        FROM Ingredients\
+        WHERE IngredientID =' + str(ingredient_id)
 
     cursor = db.get_db().cursor()
     cursor.execute(query)
@@ -123,6 +96,11 @@ def get_recipes_list ():
     return jsonify(json_data)
 
 
+
+
+
+
+# Gets information about various aspects of a recipe
 @recipes.route('/recipes/<recipe_id>/ingredients', methods=['GET'])
 def get_recipe_ingredients (recipe_id):
 
@@ -142,7 +120,6 @@ def get_recipe_ingredients (recipe_id):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
-
 @recipes.route('/recipes/<recipe_id>/appliances', methods=['GET'])
 def get_recipe_appliances (recipe_id):
 
@@ -161,7 +138,6 @@ def get_recipe_appliances (recipe_id):
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
-
 
 @recipes.route('/recipes/<recipe_id>/allergens', methods=['GET'])
 def get_recipe_allergens (recipe_id):
@@ -186,74 +162,6 @@ def get_recipe_allergens (recipe_id):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
-
-@recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
-def get_recipe_reviews (recipe_id):
-
-    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, ReviewID, Rating\
-        FROM Reviews r JOIN Users u\
-        ON r.UserID = u.UserID\
-        WHERE RecipeID = ' + str(recipe_id)
-    current_app.logger.info(query)
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
-
-
-@recipes.route('/recipes/<recipe_id>/reviews/<user_id>', methods=['GET'])
-def get_recipe_reviews_user (recipe_id, user_id):
-
-    query = 'SELECT UserID, ReviewContent, Rating\
-        FROM Reviews\
-        WHERE RecipeID =' + str(recipe_id) + 'AND UserID =' + str(user_id)
-    current_app.logger.info(query)
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
-
-
-@recipes.route('/ingredients', methods=['GET'])
-def get_ingredients ():
-
-    query = 'SELECT IngredientID as code, Name as name FROM Ingredients'
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
-
-
-@recipes.route('/appliances', methods=['GET'])
-def get_appliances ():
-
-    query = 'SELECT ApplianceID as code, Name as name FROM Appliances'
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
-
-
 @recipes.route('/recipes/<recipe_id>/categories', methods=['GET'])
 def get_recipe_categories (recipe_id):
 
@@ -270,54 +178,11 @@ def get_recipe_categories (recipe_id):
     return jsonify(json_data)
 
 
-@recipes.route('/categories', methods=['GET'])
-def get_category_types ():
-
-    query = 'SELECT Type as label, Type as value FROM Categories GROUP BY Type'
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_dict = dict(zip(column_headers, row))
-        json_dict['children'] = get_categories (row[0])
-        json_data.append(json_dict)
-    return jsonify(json_data)
 
 
-def get_categories (type):
-
-    query = 'SELECT Name as label, CategoryID as value FROM Categories WHERE Type = "' + str(type) + '"'
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return json_data
 
 
-@recipes.route('/ingredients/<ingredient_id>', methods=['GET'])
-def get_ingredient_attrs (ingredient_id):
-
-    query = 'SELECT Name, UnitPrice, UnitCalories, UnitProtein, UnitFiber\
-        FROM Ingredients\
-        WHERE IngredientID =' + str(ingredient_id)
-
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    column_headers = [x[0] for x in cursor.description]
-    json_data = []
-    the_data = cursor.fetchall()
-    for row in the_data:
-        json_data.append(dict(zip(column_headers, row)))
-    return jsonify(json_data)
-
-
+# Gets information about various aspects of an ingredient
 @recipes.route('/ingredients/<ingredient_id>/allergens', methods=['GET'])
 def get_ingredient_allergens (ingredient_id):
 
@@ -338,9 +203,110 @@ def get_ingredient_allergens (ingredient_id):
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
 
-
 @recipes.route('/ingredients/<ingredient_id>/substitutes', methods=['GET'])
 def get_ingredient_substitutes (ingredient_id):
+
+
+
+
+
+# Gets pertinent information about reviews for a recipes
+@recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
+def get_recipe_reviews (recipe_id):
+
+
+
+
+
+# Populate Dropdowns
+@recipes.route('/recipes/list', methods=['GET'])
+def get_recipes_list ():
+
+    query = 'SELECT Title as name, RecipeID as code FROM Recipes'
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+@recipes.route('/ingredients', methods=['GET'])
+def get_ingredients ():
+
+    query = 'SELECT IngredientID as code, Name as name FROM Ingredients'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+@recipes.route('/appliances', methods=['GET'])
+def get_appliances ():
+
+    query = 'SELECT ApplianceID as code, Name as name FROM Appliances'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
+@recipes.route('/categories', methods=['GET'])
+def get_category_types ():
+
+    query = 'SELECT Type as label, Type as value FROM Categories GROUP BY Type'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_dict = dict(zip(column_headers, row))
+        json_dict['children'] = get_categories (row[0])
+        json_data.append(json_dict)
+    return jsonify(json_data)
+
+def get_categories (type):
+
+    query = 'SELECT Name as label, CategoryID as value FROM Categories WHERE Type = "' + str(type) + '"'
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return json_data
+
+
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, ReviewID, Rating\
+        FROM Reviews r JOIN Users u\
+        ON r.UserID = u.UserID\
+        WHERE RecipeID = ' + str(recipe_id)
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
+
 
     query = 'SELECT Name\
         FROM Ingredients i\
@@ -358,6 +324,20 @@ def get_ingredient_substitutes (ingredient_id):
     return jsonify(json_data)
 
 
+
+
+
+
+
+### POST Routes ###
+
+
+
+
+
+
+
+# Adds a recipe to database (inserts not only to Recipes but to RecipeIngredients, RecipeCategories, etc.)
 @recipes.route('/recipes', methods=['POST'])
 def add_recipe():
     
@@ -415,35 +395,6 @@ def add_recipe():
     return 'Success!'
 
 
-@recipes.route('/recipes', methods=['POST'])
-def add_recipe_ingredients():
-    
-    # collecting data from the request object 
-    the_data = request.json
-    current_app.logger.info(the_data)
-
-    #extracting the variable
-    recipe_id = the_data['recipe_id']
-    ingredient_id = the_data['ingredient_id']
-    units = the_data['units']
-
-    # Constructing the query
-    query = 'insert into RecipeIngredients (RecipeID, IngredientID, Units) values ("'
-    query += str(recipe_id) + '", "'
-    query += str(ingredient_id) + '", "'
-    query += str(units) + ')'
-    current_app.logger.info(query)
-
-    # executing and committing the insert statement 
-    cursor = db.get_db().cursor()
-    cursor.execute(query)
-    db.get_db().commit()
-    
-    return 'Success!'
-
-
-@recipes.route('/recipes', methods=['POST'])
-def add_recipe_appliances():
     
     # collecting data from the request object 
     the_data = request.json
@@ -467,6 +418,7 @@ def add_recipe_appliances():
     return 'Success!'
 
 
+# Adds a new review for the specified recipe posted by the specified user
 @recipes.route('/recipes/<recipe_id>/reviews/<user_id>', methods=['POST'])
 def add_review(recipe_id, user_id):
     
@@ -494,6 +446,9 @@ def add_review(recipe_id, user_id):
     return 'Success!'
 
 
+#### PUT Routes ###
+
+# Updates a review that was made by a certain user
 @recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['PUT'])
 def edit_review(recipe_id, review_id):
     
@@ -520,6 +475,9 @@ def edit_review(recipe_id, review_id):
     return 'Success!'
 
 
+### DELETE Routes ###
+
+# Deletes a review that was made by a certain user
 @recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['DELETE'])
 def delete_review(recipe_id, review_id):
     
