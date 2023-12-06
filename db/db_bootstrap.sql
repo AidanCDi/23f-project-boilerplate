@@ -170,8 +170,8 @@ PlanID INTEGER NOT NULL,
 UserID INTEGER NOT NULL,
 RecipeID INTEGER NOT NULL,
 PRIMARY KEY (PlanID, UserID, RecipeID),
-FOREIGN KEY (PlanID, UserID)
-REFERENCES Plans(PlanID, UserID),
+FOREIGN KEY (PlanID)
+REFERENCES Plans(PlanID),
 FOREIGN KEY (RecipeID)
 REFERENCES Recipes(RecipeID)
 );
@@ -904,6 +904,7 @@ INSERT INTO Plans (UserID, PlanName) VALUES
 (18, 'Tropical Treats'),
 (19, "Grill Master's Plan"),
 (20, 'Student Survival Kit');
+
 
 -- Assign recipes to Weekly Meal Prep
 INSERT INTO PlanRecipes (UserID, PlanID, RecipeID) VALUES
