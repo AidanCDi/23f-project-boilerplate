@@ -422,7 +422,7 @@ def edit_review(recipe_id):
     query = 'UPDATE Reviews SET '
     query += 'ReviewContent = ' + str(review_content) + '", "'
     query += 'Rating = ' + str(rating) + ' '
-    query += 'WHERE UserID = "' + str(user_id) + '" AND RecipeID = "' + str(recipe_id) + '";'
+    query += 'WHERE UserID = ' + str(user_id) + ' AND RecipeID = ' + str(recipe_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
