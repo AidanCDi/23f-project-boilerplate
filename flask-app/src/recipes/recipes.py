@@ -206,6 +206,20 @@ def get_ingredient_allergens (ingredient_id):
 @recipes.route('/ingredients/<ingredient_id>/substitutes', methods=['GET'])
 def get_ingredient_substitutes (ingredient_id):
 
+    query = 'SELECT Name\
+            FROM Ingredients i\
+                JOIN Substitutes s\
+                    ON i.IngredientID = s.SubstituteID\
+            WHERE s.IngredientID = ' + str(ingredient_id)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
 
 
 
@@ -213,6 +227,21 @@ def get_ingredient_substitutes (ingredient_id):
 # Gets pertinent information about reviews for a recipes
 @recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
 def get_recipe_reviews (recipe_id):
+    
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, ReviewID, Rating\
+        FROM Reviews r JOIN Users u\
+        ON r.UserID = u.UserID\
+        WHERE RecipeID = ' + str(recipe_id)
+    current_app.logger.info(query)
+
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    column_headers = [x[0] for x in cursor.description]
+    json_data = []
+    the_data = cursor.fetchall()
+    for row in the_data:
+        json_data.append(dict(zip(column_headers, row)))
+    return jsonify(json_data)
 
 
 
