@@ -70,7 +70,7 @@ def get_users_recipes (user_id):
 @users.route('/users/<user_id>/plans', methods=['GET'])
 def get_all_plans (user_id):
 
-    query = 'SELECT p.PlanName, COUNT(pr.RecipeID) as Recipe, SUM(Price) as Price\
+    query = 'SELECT p.PlanName, p.PlanID, COUNT(pr.RecipeID) as Recipe, SUM(Price) as Price\
         FROM Plans p\
             JOIN PlanRecipes pr\
                 ON p.PlanID = pr.PlanID\
@@ -81,7 +81,7 @@ def get_all_plans (user_id):
                 GROUP BY r.RecipeID) recipe_attributes\
                 ON pr.RecipeID = recipe_attributes.RecipeID\
         WHERE p.UserID = ' + str(user_id) + '\
-        GROUP BY p.PlanID ' 
+        GROUP BY p.PlanID' 
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
@@ -151,6 +151,21 @@ def add_review(user_id):
     query = 'insert into RecipeAppliances (UserID, PlanName) values ("'
     query += str(user_id) + '", "'
     query += plan_name +  ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
+@users.route('/users/<user_id>/plans/<plan_id>', methods=['DELETE'])
+def delete_plan(user_id, plan_id):
+    
+    # Constructing the query
+    query = 'DELETE FROM Plans WHERE PlanID = ' + str(plan_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
