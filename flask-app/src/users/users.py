@@ -174,3 +174,18 @@ def delete_plan(user_id, plan_id):
     db.get_db().commit()
     
     return 'Success!'
+
+
+@users.route('/users/<user_id>/recipes/<recipe_id>', methods=['DELETE'])
+def delete_recipe(user_id, recipe_id):
+    
+    # Constructing the query
+    query = 'DELETE FROM Recipes WHERE RecipeID = ' + str(recipe_id)
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
