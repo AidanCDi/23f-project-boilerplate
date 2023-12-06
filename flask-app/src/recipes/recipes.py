@@ -187,7 +187,7 @@ def get_recipe_allergens (recipe_id):
 @recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
 def get_recipe_reviews (recipe_id):
 
-    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, ReviewContent, Rating\
+    query = 'SELECT CONCAT(FirstName, " ", LastName) as User, u.UserID as UserID, ReviewContent, Rating\
         FROM Reviews r JOIN Users u\
         ON r.UserID = u.UserID\
         WHERE RecipeID = ' + str(recipe_id)
