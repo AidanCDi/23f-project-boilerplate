@@ -108,7 +108,7 @@ def get_plan_recipes (user_id, plan_name):
                 GROUP BY r.RecipeID) recipe_attributes\
                 ON r.RecipeID = recipe_attributes.RecipeID\
                     LEFT OUTER JOIN (SELECT RecipeID, round(avg(Rating), 2) as Rating FROM Reviews GROUP BY RecipeID) reviews ON r.RecipeID = reviews.RecipeID) all_recipes ON pr.RecipeID = all_recipes.RecipeID\
-         WHERE PlanName = " + str(plan_name) + " AND UserID = " + str(user_id)"" 
+         WHERE PlanName = " + str(plan_name) + " AND UserID = " + str(user_id)"
     current_app.logger.info(query)
 
     cursor = db.get_db().cursor()
