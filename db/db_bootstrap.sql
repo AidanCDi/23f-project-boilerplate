@@ -110,7 +110,8 @@ PRIMARY KEY (ReviewID),
 FOREIGN KEY (UserID)
 REFERENCES Users(UserID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID)
+ON DELETE cascade,
 INDEX ReviewRating (Rating)
 );
 
@@ -132,7 +133,8 @@ RecipeID INTEGER NOT NULL,
 ApplianceID INTEGER NOT NULL,
 PRIMARY KEY (RecipeID, ApplianceID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID)
+ON DELETE cascade,
 FOREIGN KEY (ApplianceID)
 REFERENCES Appliances(ApplianceID)
 );
@@ -144,7 +146,8 @@ IngredientID INTEGER NOT NULL,
 Units INTEGER NOT NULL,
 PRIMARY KEY (RecipeID, IngredientID),
 FOREIGN KEY (RecipeID)
-REFERENCES Recipes(RecipeID),
+REFERENCES Recipes(RecipeID)
+ON DELETE cascade,
 FOREIGN KEY (IngredientID)
 REFERENCES Ingredients(IngredientID)
 );
@@ -194,6 +197,7 @@ REFERENCES Plans(PlanID)
 ON DELETE cascade,
 FOREIGN KEY (RecipeID)
 REFERENCES Recipes(RecipeID)
+ON DELETE cascade
 );
 
 
