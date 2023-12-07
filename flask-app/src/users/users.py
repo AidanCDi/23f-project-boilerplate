@@ -175,8 +175,45 @@ def add_meal_plan(user_id):
     return 'Success!'
 
 
+# adds a recipe to one of a user's meal plans
+@users.route('/users/<user_id>/plans/<plan_id>/<recipe_id>', methods=['POST'])
+def add_recipe_meal_plan(user_id, plan_id, recipe_id):
+    
+    # Constructing the query
+    query = 'insert into PlanRecipes (PlanID, UserID, RecipeID) values (' + str(plan_id) + ', ' + str(user_id) + ', ' + str(recipe_id) + ')'
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+
 ### PUT Routes ###
 
+# Changes the name of a user's meal plan
+@users.route('/users/<user_id>/plans/<plan_id>', methods=['PUT'])
+def modify_meal_plan(user_id, plan_id):
+    
+    # collecting data from the request object 
+    the_data = request.json
+    current_app.logger.info(the_data)
+
+    #extracting the variable
+    plan_name = the_data['plan_name']
+
+    # Constructing the query
+    query = 'UPDATE Plans SET PlanName = "' + plan_name + '" WHERE PlanID = ' + str(plan_id)
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
 
 ### DELETE Routes ###
 
@@ -195,13 +232,27 @@ def delete_plan(user_id, plan_id):
     
     return 'Success!'
 
-
 # Deletes a certain recipe posted by a certain user
 @users.route('/users/<user_id>/recipes/<recipe_id>', methods=['DELETE'])
 def delete_recipe(user_id, recipe_id):
-    
+
     # Constructing the query
     query = 'DELETE FROM Recipes WHERE RecipeID = ' + str(recipe_id)
+    current_app.logger.info(query)
+
+    # executing and committing the insert statement 
+    cursor = db.get_db().cursor()
+    cursor.execute(query)
+    db.get_db().commit()
+    
+    return 'Success!'
+
+# Deletes a recipe in a meal plan
+@users.route('/users/<user_id>/plans/<plan_id>/<recipe_id>', methods=['DELETE'])
+def delete_recipe_meal_plan(user_id, plan_id, recipe_id):
+
+    # Constructing the query
+    query = 'DELETE FROM PlanRecipes WHERE RecipeID = ' + str(recipe_id) + ' AND PlanID = ' + str(plan_id)
     current_app.logger.info(query)
 
     # executing and committing the insert statement 
