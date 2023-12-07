@@ -7,6 +7,8 @@ recipes = Blueprint('recipes', __name__)
 
 ### GET Routes ###
 
+
+
 # Gets a table of all recipes
 @recipes.route('/recipes', methods=['GET'])
 def get_recipes():
@@ -41,9 +43,6 @@ def get_recipes():
         json_data.append(dict(zip(column_headers, row)))
 
     return jsonify(json_data)
-
-
-
 
 
 
@@ -94,9 +93,6 @@ def get_ingredient_attrs (ingredient_id):
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
-
-
-
 
 
 
@@ -179,9 +175,6 @@ def get_recipe_categories (recipe_id):
 
 
 
-
-
-
 # Gets information about various aspects of an ingredient
 @recipes.route('/ingredients/<ingredient_id>/allergens', methods=['GET'])
 def get_ingredient_allergens (ingredient_id):
@@ -223,7 +216,6 @@ def get_ingredient_substitutes (ingredient_id):
 
 
 
-
 # Gets pertinent information about reviews for a recipes
 @recipes.route('/recipes/<recipe_id>/reviews', methods=['GET'])
 def get_recipe_reviews (recipe_id):
@@ -242,8 +234,6 @@ def get_recipe_reviews (recipe_id):
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
-
-
 
 
 
@@ -354,15 +344,7 @@ def get_categories (type):
 
 
 
-
-
-
-
 ### POST Routes ###
-
-
-
-
 
 
 
@@ -447,6 +429,7 @@ def add_recipe():
     return 'Success!'
 
 
+
 # Adds a new review for the specified recipe posted by the specified user
 @recipes.route('/recipes/<recipe_id>/reviews/<user_id>', methods=['POST'])
 def add_review(recipe_id, user_id):
@@ -475,7 +458,10 @@ def add_review(recipe_id, user_id):
     return 'Success!'
 
 
+
 #### PUT Routes ###
+
+
 
 # Updates a review that was made by a certain user
 @recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['PUT'])
@@ -504,7 +490,10 @@ def edit_review(recipe_id, review_id):
     return 'Success!'
 
 
+
 ### DELETE Routes ###
+
+
 
 # Deletes a review that was made by a certain user
 @recipes.route('/recipes/<recipe_id>/reviews/<review_id>', methods=['DELETE'])

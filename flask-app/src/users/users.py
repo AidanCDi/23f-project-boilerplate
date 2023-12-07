@@ -7,6 +7,8 @@ users = Blueprint('users', __name__)
 
 ### GET Routes ###
 
+
+
 # Get relevant information for a specific user (their socials, any recipes they posted, and any meal plans they've created)
 @users.route('/users/<user_id>/socials', methods=['GET'])
 def get_users_socials (user_id):
@@ -80,7 +82,6 @@ def get_all_plans (user_id):
 
 
 
-
 # Gets information about a specific meal plan
 @users.route('/users/<user_id>/plans/<plan_id>', methods=['GET'])
 def get_plan_recipes (user_id, plan_id):
@@ -107,8 +108,6 @@ def get_plan_recipes (user_id, plan_id):
     for row in the_data:
         json_data.append(dict(zip(column_headers, row)))
     return jsonify(json_data)
-
-
 
 
 
@@ -145,10 +144,9 @@ def get_all_plans_list (user_id):
 
 
 
-
-
-
 ### POST Routes ###
+
+
 
 # adds a meal plan to a user's profile
 @users.route('/users/<user_id>/plans', methods=['POST'])
@@ -175,6 +173,7 @@ def add_meal_plan(user_id):
     return 'Success!'
 
 
+
 # adds a recipe to one of a user's meal plans
 @users.route('/users/<user_id>/plans/<plan_id>/<recipe_id>', methods=['POST'])
 def add_recipe_meal_plan(user_id, plan_id, recipe_id):
@@ -191,7 +190,10 @@ def add_recipe_meal_plan(user_id, plan_id, recipe_id):
     return 'Success!'
 
 
+
 ### PUT Routes ###
+
+
 
 # Changes the name of a user's meal plan
 @users.route('/users/<user_id>/plans/<plan_id>', methods=['PUT'])
@@ -215,7 +217,11 @@ def modify_meal_plan(user_id, plan_id):
     
     return 'Success!'
 
+
+
 ### DELETE Routes ###
+
+
 
 # Deletes a certain meal plan created by a certain user
 @users.route('/users/<user_id>/plans/<plan_id>', methods=['DELETE'])
@@ -232,6 +238,8 @@ def delete_plan(user_id, plan_id):
     
     return 'Success!'
 
+
+
 # Deletes a certain recipe posted by a certain user
 @users.route('/users/<user_id>/recipes/<recipe_id>', methods=['DELETE'])
 def delete_recipe(user_id, recipe_id):
@@ -246,6 +254,8 @@ def delete_recipe(user_id, recipe_id):
     db.get_db().commit()
     
     return 'Success!'
+
+
 
 # Deletes a recipe in a meal plan
 @users.route('/users/<user_id>/plans/<plan_id>/<recipe_id>', methods=['DELETE'])
